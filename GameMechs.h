@@ -12,11 +12,12 @@ using namespace std;
 class GameMechs
 {
     private:
-        char input;
+        char input; //holds the most recent input collected via MacUILib_getChar()
         bool exitFlag;
-        bool loseFlag;
-        int score;
-
+        bool loseFlag; //recording if the player has lost
+        //shouldn't be set to true if the player presses the exit key to end game
+        //use this flag to determine what messages to display at the end of the game
+        int score; //holds current score of player
         int boardSizeX;
         int boardSizeY;
 
@@ -32,7 +33,7 @@ class GameMechs
         bool getLoseFlagStatus() const;
         void setLoseFlag();
 
-        char getInput() const;
+        char getInput() ;
         void setInput(char this_input);
         void clearInput();
 
