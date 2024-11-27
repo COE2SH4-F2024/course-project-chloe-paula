@@ -9,7 +9,7 @@ Player::Player(GameMechs* thisGMRef)
     // more actions to be included... initialize player details
     playerPos.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
     playerPos.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
-    playerPos.symbol = '@'; //player symbol
+    playerPos.symbol = '*'; //player symbol
 }
 
 
@@ -67,7 +67,7 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
-    updatePlayerDir();    
+    //updatePlayerDir();    
     // PPA3 Finite State Machine logic
     //switch cases logic... switch according to direction 
     if(myDir != STOP)
