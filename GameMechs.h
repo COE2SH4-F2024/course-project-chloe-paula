@@ -34,9 +34,9 @@ class GameMechs
         // is this one needed at all? Do we have heap members?
         ~GameMechs(); 
 
-        bool getExitFlagStatus() const; 
+        bool getExitFlagStatus(); 
         void setExitTrue();
-        bool getLoseFlagStatus() const ;
+        bool getLoseFlagStatus();
         void setLoseFlag();
 
         //clear most recent collected ASCII input from the field

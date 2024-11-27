@@ -10,12 +10,13 @@ using namespace std;
 #define DELAY_CONST 100000
 #define BOARDER_CHAR '#'
 
-//
+//global pointer to Player class
 Player *myPlayer;
 
 //global pointer to GameMechs class
 GameMechs *myGM;
 
+//first iteration ASCII list (food)
 const int itemlistsize = 3;
 objPos asciiList[itemlistsize];
 
@@ -33,7 +34,7 @@ int main(void)
     Initialize();
 
     //accessing exit flag in GameMechs
-    while(myGM->getExitFlagStatus() == false)  
+    while(myGM->getExitFlagStatus() == false && myGM->getLoseFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -77,6 +78,14 @@ void GetInput(void)
                     myGM->setExitTrue(); 
                     //set to true = exit game
                     break;
+                case 'p': case 'P': //Debug: check if score increments
+                    myGM->incrementScore();
+                    MacUILib_printf("\nDebug: score incremented. Current score: %d\n", myGM->getScore());
+                    break;
+                case 'l': //Debug: force player to loose: set loseflag to true
+                    myGM->setLoseFlag();
+                    MacUILib_printf("Debug: loseflag set to true. Game Lost.\n");
+                    break;
         }
     }
 }
@@ -111,19 +120,31 @@ void DrawScreen(void)
         for (i = 0; i < boardX; i++) 
         {
             asciiflag = false;
-            if (i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1) 
+            if (i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
                 //draws boarder
                 MacUILib_printf("%c", BOARDER_CHAR); 
-            else if (i == playerX && j == playerY) 
+            else if (i == playerX && j == playerY)
                 //draws player @
                 MacUILib_printf("%c", playerSymbol);
             else
-                //draws space
-                MacUILib_printf(" ");
+            {   //print the ascii list if their coordinates match
+                for(k = 0; k < itemlistsize; k++)
+                {
+                    if(asciiList[k].pos->x == i && asciiList[k].pos->y == j)
+                    {
+                        MacUILib_printf("%c", asciiList[k].getSymbol());
+                        asciiflag = true;
+                        break;
+                    }
+                }
+                if(!asciiflag) 
+                    MacUILib_printf(" "); //space if no ASCII item
+            }
         } 
-        MacUILib_printf("\n");
+        MacUILib_printf("\n"); //move to next row with new line
     } 
     MacUILib_printf("Press + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
+    MacUILib_printf("To EXIT GAME: press ESCAPE, ENTER or SPACE button");
 }
     
 void LoopDelay(void)
@@ -156,6 +177,13 @@ void LoopDelay(void)
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
+
+    //Display messages depending on end-game status
+    if(myGM->getLoseFlagStatus())
+        MacUILib_printf("Game Over: You lost the game!\n");
+    else if(myGM->getExitFlagStatus())
+        MacUILib_printf("Game Over: You exited the game!\n");
+
     //delete heap memory
     delete myPlayer;
     delete myGM;

@@ -27,16 +27,14 @@ GameMechs::~GameMechs()
     //at this moment no because we dont have a heap member
 }
 
-bool GameMechs::getExitFlagStatus() const
+bool GameMechs::getExitFlagStatus() 
 {
     return exitFlag;
-    cout << "exit status:"<< loseFlag << endl;
 }
 
-bool GameMechs::getLoseFlagStatus() const
+bool GameMechs::getLoseFlagStatus() 
 {
     return loseFlag;
-    cout << "loseflag status:"<< loseFlag << endl;
 }
     
 
@@ -57,11 +55,8 @@ int GameMechs::getScore()
 
 void GameMechs::incrementScore()
 {
-    score = getScore();
-    cout << "Score before increment called:" << score << endl;
     score++;
-    cout << "Increment score:" << score << endl;
-
+    clearInput();
 }
 
 int GameMechs::getBoardSizeX() const
@@ -83,7 +78,6 @@ void GameMechs::setExitTrue()
 void GameMechs::setLoseFlag()
 {
     loseFlag = true; //true = player lost the game
-    cout << "loseflag status after setter (to true):"<< loseFlag << endl;
 }
 
 void GameMechs::setInput(char this_input)
