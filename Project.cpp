@@ -10,13 +10,14 @@ using namespace std;
 #define DELAY_CONST 100000
 #define BOARDER_CHAR '#'
 
+//
 Player *myPlayer;
+
+//global pointer to GameMechs class
 GameMechs *myGM;
 
 const int itemlistsize = 3;
 objPos asciiList[itemlistsize];
-
-bool exitFlag;
 
 void Initialize(void);
 void GetInput(void);
@@ -26,14 +27,13 @@ void LoopDelay(void);
 void CleanUp(void);
 
 
-
 int main(void)
 {
 
     Initialize();
 
-    while(exitFlag == false)  
-    //or while(myGM->getExitFlagStatus()==false)
+    //accessing exit flag in GameMechs
+    while(myGM->getExitFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -51,9 +51,9 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    exitFlag = false;
-
+    //GameMechs object on the heap
     myGM = new GameMechs();
+    //
     myPlayer = new Player(myGM);
 
     //initialize arbitrary ascii chars (ITERATION 0)
@@ -64,11 +64,27 @@ void Initialize(void)
 
 void GetInput(void)
 {
-   
+    char input_char = myGM->getInput();
+
+    if(input_char != 0)
+    {
+        myGM->setInput(input_char);
+
+        switch(input_char) 
+        { //DECIDE IF EXIT GAME                  
+                case ' ': case 13 : case 27: 
+                //case space,escape,enter
+                    myGM->setExitTrue(); 
+                    //set to true = exit game
+                    break;
+        }
+    }
 }
 
 void RunLogic(void)
 {
+    //movePlayer() calls the updatePlayerDir() function
+    //determines the direction, and moves player accordingly
     myPlayer->movePlayer();
 }
 
@@ -90,52 +106,57 @@ void DrawScreen(void)
     char playerSymbol = playerPos.getSymbol();
     
     //draw the board
-    for (i = 0; i < boardX; i++) 
+    for (j = 0; j < boardY; j++) 
     {
-        for (j = 0; j < boardY; j++) 
+        for (i = 0; i < boardX; i++) 
         {
             asciiflag = false;
             if (i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1) 
-            {
-                MacUILib_printf("%c", BOARDER_CHAR); //boarder
-            } 
+                //draws boarder
+                MacUILib_printf("%c", BOARDER_CHAR); 
             else if (i == playerX && j == playerY) 
-            {
+                //draws player @
                 MacUILib_printf("%c", playerSymbol);
-            } 
-            else 
-            {
-                for(k = 0; k < itemlistsize; k++)
-                {
-                    if(asciiList[k].pos->x == i && asciiList[k].pos->y == j)
-                    {
-                        MacUILib_printf("%c", asciiList[k].getSymbol());
-                        asciiflag = true;
-                        break;
-                    }
-                }
-                if(!asciiflag)
-                {
-                    MacUILib_printf(" "); //space
-                }
-            }
-        } MacUILib_printf("\n");
+            else
+                //draws space
+                MacUILib_printf(" ");
+        } 
+        MacUILib_printf("\n");
     } 
+    MacUILib_printf("Press + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
 }
     
-
-
-
 void LoopDelay(void)
 {
-    MacUILib_Delay(DELAY_CONST); // 0.1s delay
+    // Change the delaying constant to vary the movement speed.
+    int delayspeed;
+
+    switch(myGM->getCurrentSpeed())
+    {
+        case 1: //slowest
+            delayspeed = 400000;
+            break;
+        case 2: 
+            delayspeed = 300000;
+            break;
+        case 3: // default
+            delayspeed = DELAY_CONST; 
+            break;
+        case 4: 
+            delayspeed = 60000;
+            break;
+        case 5: 
+            delayspeed = 10000;
+            break;
+    }
+    MacUILib_Delay(delayspeed); 
 }
 
 
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
-    //delete pointers
+    //delete heap memory
     delete myPlayer;
     delete myGM;
 

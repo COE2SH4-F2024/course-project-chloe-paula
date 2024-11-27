@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <time.h>
+#include <iostream>
 
 #include "objPos.h"
 #include "objPosArrayList.h"
@@ -20,19 +21,26 @@ class GameMechs
         int score; //holds current score of player
         int boardSizeX;
         int boardSizeY;
+        int MAX_SPEED;
+        int MIN_SPEED;
+        int gamespeed;
 
-        objPos food;
+        objPos food; 
 
     public:
+        //initialize game mechanic-related parameters
         GameMechs();
         GameMechs(int boardX, int boardY);
-        ~GameMechs(); // is this one needed at all? Why or why not?
-        
+        // is this one needed at all? Do we have heap members?
+        ~GameMechs(); 
+
         bool getExitFlagStatus() const; 
         void setExitTrue();
-        bool getLoseFlagStatus() const;
+        bool getLoseFlagStatus() const ;
         void setLoseFlag();
 
+        //clear most recent collected ASCII input from the field
+        //use this to make sure no input is double-processed
         char getInput() ;
         void setInput(char this_input);
         void clearInput();
@@ -40,10 +48,23 @@ class GameMechs
         int getBoardSizeX() const;
         int getBoardSizeY() const;
         
-        int getScore() const;
+        int getScore();
+
+        //setter for the score field
+        //assumption is that the score can only be 
+        //increased by 1 at a time per food item collected
+        //... maybe change this method later on to increase
+       //score by more than 1?
         void incrementScore();
         
         // More methods should be added here
+        int getMaxSpeed() const;
+        int getMinSpeed() const;
+        int getCurrentSpeed();
+        int increment_speed();
+        int decrease_speed();
+
+
 };
 
 #endif
