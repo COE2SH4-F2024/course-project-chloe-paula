@@ -92,8 +92,7 @@ void GetInput(void)
 
 void RunLogic(void)
 {
-    //movePlayer() calls the updatePlayerDir() function
-    //determines the direction, and moves player accordingly
+    myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
 }
 

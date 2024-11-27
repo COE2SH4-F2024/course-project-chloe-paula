@@ -70,28 +70,40 @@ void Player::movePlayer()
     //updatePlayerDir();    
     // PPA3 Finite State Machine logic
     //switch cases logic... switch according to direction 
+
+    //easy access to board dimensions:
+    int board_H = mainGameMechsRef->getBoardSizeY();
+    int board_W = mainGameMechsRef->getBoardSizeX();
+
     if(myDir != STOP)
     {
         switch(myDir)
         {
             case UP:
-                playerPos.pos->y--; //up = negative on cartesian of board
-                if(playerPos.pos->y < 1) //reached the upper boarder limit
-                    playerPos.pos->y = mainGameMechsRef->getBoardSizeY() - 1; //resets to lower limit = height
+                if(playerPos.pos->y > 1)
+                    playerPos.pos->y--; 
+                else
+                    //if reached the upper boarder limit -- wraps around to row 9
+                    playerPos.pos->y = board_H - 2; 
                 break;
             case DOWN:
-                playerPos.pos->y++; // increasing y moves char visually down (vise versa^)
-                if(playerPos.pos->y > mainGameMechsRef->getBoardSizeY() - 1)
-                    playerPos.pos->y = 1;
+                if(playerPos.pos->y < board_H - 2)
+                    //move within bounds
+                    playerPos.pos->y++; 
+                else
+                    playerPos.pos->y = 1; //reset to limit
                 break;
             case LEFT:
-                playerPos.pos->x--;
-                if(playerPos.pos->x == 1)
-                    playerPos.pos->x = mainGameMechsRef->getBoardSizeX() - 1;
+                if(playerPos.pos->x > 1)
+                    playerPos.pos->x--;
+                else //if reached limit -- wrap around
+                    playerPos.pos->x = board_W - 2;
                 break;
             case RIGHT:
-                playerPos.pos->x++;
-                if(playerPos.pos->x == mainGameMechsRef->getBoardSizeX() - 1)
+                if(playerPos.pos->x < board_W -2)
+                    //move within bounds
+                    playerPos.pos->x++;
+                else
                     playerPos.pos->x = 1;
                 break;
         }
