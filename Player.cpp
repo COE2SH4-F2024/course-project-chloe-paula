@@ -9,7 +9,7 @@ Player::Player(GameMechs* thisGMRef)
     // more actions to be included... initialize player details
     playerPos.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
     playerPos.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
-    playerPos.symbol = '@'; //player symbol
+    playerPos.symbol = '*'; //player symbol
 }
 
 
@@ -30,7 +30,7 @@ void Player::updatePlayerDir()
 
             // PPA2/3 input processing logic for direction!!   
      //note change direction = myDir
-     if(input != 0)  // if not null character
+    if(input != 0)  // if not null character
     {
         switch(input)
         {                      
@@ -40,6 +40,7 @@ void Player::updatePlayerDir()
             case 'w': //set to UP if not going down
                 if(myDir != DOWN){
                     myDir = UP;
+                    
                 }
                 break;
             case 'a': //set to RIGHT if not going left
@@ -67,19 +68,19 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
-    updatePlayerDir();    
+    //updatePlayerDir();    
     // PPA3 Finite State Machine logic
     //switch cases logic... switch according to direction 
     switch(myDir){
         case LEFT:
             if (playerPos.pos->x == 1){
-                playerPos.pos->x = 18;
+                playerPos.pos->x = mainGameMechsRef->getBoardSizeX();
             }else{
                 playerPos.pos->x--;
             }
             break;
         case RIGHT:
-            if (playerPos.pos->x == 18){
+            if (playerPos.pos->x == mainGameMechsRef->getBoardSizeX()){
                 playerPos.pos->x = 1;
             }else{
                 playerPos.pos->x++;
@@ -87,13 +88,13 @@ void Player::movePlayer()
             break;
         case UP:
             if (playerPos.pos->y == 1){
-                playerPos.pos->y = 8;
+                playerPos.pos->y = mainGameMechsRef->getBoardSizeY();
             }else{
                 playerPos.pos->y--;
             }
             break;
         case DOWN:
-            if (playerPos.pos->y == 8){
+            if (playerPos.pos->y == mainGameMechsRef->getBoardSizeY()){
                 playerPos.pos->y = 1;
             }else{
                 playerPos.pos->y++;

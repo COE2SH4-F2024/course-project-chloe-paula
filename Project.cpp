@@ -64,11 +64,12 @@ void Initialize(void)
 
 void GetInput(void)
 {
-   
+   myGM->getInput();//????maybe
 }
 
 void RunLogic(void)
 {
+    myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
 }
 
@@ -120,7 +121,11 @@ void DrawScreen(void)
                 }
             }
         } MacUILib_printf("\n");
+        
+        
     } 
+    
+
 }
     
 
