@@ -53,7 +53,7 @@ void objPosArrayList::insertTail(objPos thisPos)
 {
     //shorter version: if(listSize == arrayCapacity) return; //"sanity check"
     if(listSize == arrayCapacity){
-        cout << " array full" << endl;
+        std::cout << " array full" << std::endl;
         return;
     }
     aList[listSize++] = thisPos;
@@ -103,12 +103,12 @@ void objPosArrayList::printList()
 {
    if(listSize == 0) 
    {
-    cout << "list empty!" << endl;
+    std::cout << "list empty!" << std::endl;
     return;
    }
 
     for(int i = 0; i < listSize; i++)
-        cout << aList[i] <<" ";
+        std::cout << aList[i] <<" ";
         
-    cout << endl;
+    std::cout << std::endl;
 }
