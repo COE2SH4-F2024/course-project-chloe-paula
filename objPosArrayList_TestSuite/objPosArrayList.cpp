@@ -1,14 +1,18 @@
 #include "objPosArrayList.h"
 #include <iostream>
-
+using namespace std;
 // Check lecture contents on general purpose array list construction, 
 // and modify it to support objPos array list construction.
 
 objPosArrayList::objPosArrayList()
 {
+    //number of valid list elements in the list
     listSize = 0;
+    //number of array elements allocated in heap array
     arrayCapacity = ARRAY_MAX_CAP; //200
-    aList = new int[ARRAY_MAX_CAP]; //create 200-int array on heap
+    //Allocate objPos array - 200-element on heap
+    aList = new objPos[arrayCapacity];
+
 }
 //destructor:
 objPosArrayList::~objPosArrayList()
@@ -16,16 +20,19 @@ objPosArrayList::~objPosArrayList()
     delete[] aList;
 }
 
-//copy constructor:??? i added this based on what i think is missing
-// objPosArrayList::objPosArrayList(const objPosArrayList &l)
-// {
-//     //deep copy!
-//     listSize = l.listSize;
-//     arrayCapacity = l.arrayCapacity;
-//      aList = new int[DEFAULT_SIZE];
-//     for(int i = 0; i < sizeList; i++)
-//         aList[i] = l.aList[i];
-// }
+//copy constructor: added this based on what we think is missing
+objPosArrayList::objPosArrayList(const objPosArrayList &l)
+{
+    //deep copy!
+    listSize = l.listSize;
+    arrayCapacity = l.arrayCapacity;
+    aList = new objPos[arrayCapacity];
+    for(int i = 0; i < listSize; i++)
+        aList[i] = l.aList[i];
+}
+
+//
+
 int objPosArrayList::getSize() const
 {
     return listSize;
@@ -44,7 +51,7 @@ void objPosArrayList::insertHead(objPos thisPos)
     for(int i = listSize; i > 0; i--)
         aList[i] = aList[i - 1]; //shifts elements down
 
-    aList[0] = thisPos.symbol;
+    aList[0].symbol = thisPos.symbol;
     listSize++;
 
 }
@@ -108,7 +115,7 @@ void objPosArrayList::printList()
    }
 
     for(int i = 0; i < listSize; i++)
-        cout << aList[i] <<" ";
+        cout<< aList[i].symbol << " ";
         
     cout << endl;
 }
