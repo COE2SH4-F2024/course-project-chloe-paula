@@ -7,8 +7,8 @@ GameMechs::GameMechs()
     exitFlag = false;
     loseFlag = false;
     score = 0;
-    boardSizeX = 20; 
-    boardSizeY = 10;
+    boardSizeX = 30; 
+    boardSizeY = 15;
     MAX_SPEED = 5;
     MIN_SPEED = 1; 
     gamespeed = 3;
