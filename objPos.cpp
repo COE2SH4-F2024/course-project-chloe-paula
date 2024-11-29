@@ -36,8 +36,11 @@ objPos &objPos::operator=(const objPos &o)
 {
     if(this != &o) //to make sure no self-assigning
     {
-        *pos = *o.pos;
+        delete pos; // free existing memory
+        pos = new Pos(*o.pos); //allocate new memory
         symbol = o.symbol;
+        // *pos = *o.pos;
+        // symbol = o.symbol;
     }
     return *this;
 }
@@ -61,10 +64,7 @@ objPos objPos::getObjPos() const
 {
     //get the position of player
     objPos returnPos;
-    returnPos.pos->x = pos->x;
-    returnPos.pos->y = pos->y;
-    returnPos.symbol = symbol;
-    
+    returnPos.setObjPos(pos->x,pos->y,symbol); //using helper funciton
     return returnPos;
 }
 

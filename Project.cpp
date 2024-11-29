@@ -1,9 +1,12 @@
 #include <iostream>
 #include "MacUILib.h"
-#include "objPos.h"
+#include <ctime> //for seeding rand()
+#include <cstdlib> //for rand()
 
+#include "objPos.h"
 #include "GameMechs.h"
 #include "Player.h"
+#include "Food.h"
 
 using namespace std;
 
@@ -12,13 +15,14 @@ using namespace std;
 
 //global pointer to Player class
 Player *myPlayer;
-
 //global pointer to GameMechs class
 GameMechs *myGM;
+//global pointer to Food class
+Food *snakeFood;
 
 //first iteration ASCII list (food)
-const int itemlistsize = 3;
-objPos asciiList[itemlistsize];
+// const int itemlistsize = 5;
+// objPos asciiList[itemlistsize];
 
 void Initialize(void);
 void GetInput(void);
@@ -52,15 +56,21 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    //GameMechs object on the heap
+    //Allocate memory for global objects on the heap
     myGM = new GameMechs();
-    //
     myPlayer = new Player(myGM);
+    snakeFood = new Food();
 
-    //initialize arbitrary ascii chars (ITERATION 0)
-    asciiList[0].setObjPos(3, 6, 'A');
-    asciiList[1].setObjPos(5, 5, 'B');
-    asciiList[2].setObjPos(6, 8,'C');
+    //initialize arbitrary ascii chars (ITERATION 0):
+    // asciiList[0].setObjPos(3, 6, 'A');
+    // asciiList[1].setObjPos(5, 5, 'B');
+    // asciiList[2].setObjPos(6, 8,'C');
+
+    srand(time(NULL)); //seed the random number generator
+
+    //Generate initial random snake food:
+    snakeFood->generateFood(myPlayer->getPlayerPos());
+
 }
 
 void GetInput(void)
@@ -78,10 +88,17 @@ void GetInput(void)
                     myGM->setExitTrue(); 
                     //set to true = exit game
                     break;
+
+                case 'f': case 'F':
+                    snakeFood->generateFood(myPlayer->getPlayerPos());
+                    MacUILib_printf("debug: food regenerated\n");
+                    break;
+
                 case 'p': case 'P': //Debug: check if score increments
                     myGM->incrementScore();
                     MacUILib_printf("\nDebug: score incremented. Current score: %d\n", myGM->getScore());
                     break;
+
                 case 'l': //Debug: force player to loose: set loseflag to true
                     myGM->setLoseFlag();
                     MacUILib_printf("Debug: loseflag set to true. Game Lost.\n");
@@ -94,6 +111,8 @@ void RunLogic(void)
 {
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
+
+    //possibly place detect collision code for iteration 3:
 }
 
 void DrawScreen(void)
@@ -102,7 +121,7 @@ void DrawScreen(void)
 
     //copy from ppa2, change the variable names accordingly
     int i, j, k;
-    int asciiflag;
+    // int asciiflag;
     //get board dimensions
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
@@ -112,31 +131,38 @@ void DrawScreen(void)
     int playerX = playerPos.pos->x;
     int playerY = playerPos.pos->y;
     char playerSymbol = playerPos.getSymbol();
+
+    // int foodListSize = snakeFood->getListSize();
     
     //draw the board
-    for (j = 0; j < boardY; j++) 
+    for(j = 0; j < boardY; j++) 
     {
-        for (i = 0; i < boardX; i++) 
+        for(i = 0; i < boardX; i++) 
         {
-            asciiflag = false;
-            if (i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
+            // asciiflag = false;
+            if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
                 //draws boarder
                 MacUILib_printf("%c", BOARDER_CHAR); 
-            else if (i == playerX && j == playerY)
+            else if(i == playerX && j == playerY)
                 //draws player @
                 MacUILib_printf("%c", playerSymbol);
             else
             {   //print the ascii list if their coordinates match
-                for(k = 0; k < itemlistsize; k++)
-                {
-                    if(asciiList[k].pos->x == i && asciiList[k].pos->y == j)
-                    {
-                        MacUILib_printf("%c", asciiList[k].getSymbol());
-                        asciiflag = true;
-                        break;
-                    }
-                }
-                if(!asciiflag) 
+                // bool foodDrawn = false;
+                
+                // // for(k = 0; k < foodListSize; k++)
+                // // {
+                // //     if(snakeFood->getFoodPos(k).pos->x == i && snakeFood->getFoodPos(k).pos->y == j)
+                // //     {
+                // //         MacUILib_printf("%c", snakeFood->getFoodPos(k).symbol);
+                // //         // asciiflag = true;
+                //         foodDrawn = true;
+                //         break;
+                if( i == snakeFood->getFoodPos(i).pos->x && j == snakeFood->getFoodPos(j).pos->y )
+                    //print the single food (iteration 2b)
+                    MacUILib_printf("%c", snakeFood->printFoodSymbol());                
+                // if(!foodDrawn) 
+                else
                     MacUILib_printf(" "); //space if no ASCII item
             }
         } 
@@ -186,9 +212,10 @@ void CleanUp(void)
     //delete heap memory
     delete myPlayer;
     delete myGM;
+    delete snakeFood;
 
-    for(int k = 0; k < itemlistsize; k++)
-        delete asciiList[k].pos;
+    // for(int k = 0; k < itemlistsize; k++)
+    //     delete asciiList[k].pos;
 
     MacUILib_uninit();
 }
