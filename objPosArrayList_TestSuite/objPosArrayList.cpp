@@ -14,9 +14,9 @@ objPosArrayList::objPosArrayList()
     aList = new objPos[arrayCapacity];
    
     
-    for(int i=0; i<ARRAY_MAX_CAP;i++){
-         (aList+i)->symbol = '0';
-    }
+    // for(int i=0; i<ARRAY_MAX_CAP;i++){
+    //      (aList+i)->symbol = '0';
+    // }
 
 
 }
@@ -39,6 +39,7 @@ objPosArrayList::objPosArrayList(const objPosArrayList &l)
 objPosArrayList::~objPosArrayList()
 {
     delete[] aList;
+    aList = nullptr;
 }
 
 //copy assignment operator
@@ -46,13 +47,15 @@ objPosArrayList &objPosArrayList::operator=(const objPosArrayList &l)
 {
     if(this != &l)
     {
+        delete[] aList;
         
-        this->listSize = l.listSize;
-        this->arrayCapacity = l.arrayCapacity;
+        listSize = l.listSize;
+        arrayCapacity = l.arrayCapacity;
+        aList = new objPos[arrayCapacity];
 
         for(int i = 0; i < listSize; i++)
         {
-            this->aList[i] = l.aList[i];
+            aList[i] = l.aList[i];
         }
     }
 
@@ -134,11 +137,8 @@ objPos objPosArrayList::getTailElement() const
 objPos objPosArrayList::getElement(int index) const
 {
     //check if index out of bound
-    if(index < 0 ){
+    if(index < 0 || index >= listSize){
         index = 0;
-    } 
-    else if(index >= listSize){
-        index = listSize - 1;
     } 
 
     return aList[index];
