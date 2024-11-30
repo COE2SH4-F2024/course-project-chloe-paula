@@ -126,7 +126,7 @@ void RunLogic(void)
         myGM->generateFood(currentPlayer);
 
         MacUILib_printf("Food eaten! New food generated. Current score: %d\n", myGM->getScore());
-        
+
     }
     //possibly place detect collision code for iteration 3:
 }
@@ -143,7 +143,9 @@ void DrawScreen(void)
     int boardY = myGM->getBoardSizeY();
     
     //get player position and symbol
-    objPos playerPos = myPlayer->getPlayerPos();
+    objPosArrayList* playerPos = myPlayer->getPlayerPos();
+    int playerSize = playerPos->getSize();
+
     int playerX = playerPos.pos->x;
     int playerY = playerPos.pos->y;
     char playerSymbol = playerPos.symbol; //was: playerPos.getSymbol();
@@ -157,13 +159,30 @@ void DrawScreen(void)
     {
         for(i = 0; i < boardX; i++) 
         {
+            for(int k = 0; k < playerSize; k++)
+            {
+                objPos thisSeg = playerPos->getElement(k);
+
+                //iter 3: check if curr seg x,y, pos 
+                //matches the i,j corrd
+                //if yes print player
+
+                //watch out!
+                //we need to skip the if-else block below
+                //if we have printed something in the for loop
+            }    
+
+            //at the end of the for loop, do something to determine
+            //whether to conitnue with the if-else of 
+            //or to move on to the next iteration of  i,j
+
             // asciiflag = false;
             if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
                 //draws boarder
                 MacUILib_printf("%c", BOARDER_CHAR); 
-            else if(i == playerX && j == playerY)
-                //draws player @
-                MacUILib_printf("%c", playerSymbol);
+            // else if(i == playerX && j == playerY)
+            //     //draws player @
+            //     MacUILib_printf("%c", playerSymbol);
             else if(i == foodPos.pos->x && j == foodPos.pos->y)
             {   //print the ascii list if their coordinates match
                 // bool foodDrawn = false;

@@ -14,9 +14,9 @@ Player::Player(GameMechs* thisGMRef)
     playerPosList->insertHead(headPos);
 
     // more actions to be included... initialize player details
-    // playerPos.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
-    // playerPos.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
-    // playerPos.symbol = '*'; //player symbol
+    // currentHead.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
+    // currentHead.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
+    // currentHead.symbol = '*'; //player symbol
 }
 
 
@@ -28,7 +28,7 @@ Player::~Player()
 
 objPosArrayList* Player::getPlayerPos() const
 {
-    // return the reference to the playerPos arrray list
+    // return the reference to the currentHead arrray list
     return playerPosList;
 }
 
@@ -88,7 +88,8 @@ void Player::movePlayer()
     //      probably should get the head elements of the playerPosList
     //      as a good starting point.
 
-    // objPos currentHead =  
+    objPos currentHead = playerPosList->getHeadElement();
+    objPos tempHead = playerPosList->getHeadElement();
     if(myDir != STOP)
     {
         switch(myDir)
@@ -97,37 +98,37 @@ void Player::movePlayer()
                 //calculatte new position of the head,
                 //using the temp objPos
             case UP:
-                if(playerPos.pos->y > 1)
-                    playerPos.pos->y--; 
+                if(currentHead.pos->y > 1)
+                    tempHead.pos->y--; 
                 else
                     //if reached the upper boarder limit -- wraps around to row 9
-                    playerPos.pos->y = board_H - 2; 
+                    tempHead.pos->y = board_H - 2; 
                 break;
             case DOWN:
-                if(playerPos.pos->y < board_H - 2)
+                if(currentHead.pos->y < board_H - 2)
                     //move within bounds
-                    playerPos.pos->y++; 
+                    tempHead.pos->y++; 
                 else
-                    playerPos.pos->y = 1; //reset to limit
+                    tempHead.pos->y = 1; //reset to limit
                 break;
             case LEFT:
-                if(playerPos.pos->x > 1)
-                    playerPos.pos->x--;
+                if(currentHead.pos->x > 1)
+                    tempHead.pos->x--;
                 else //if reached limit -- wrap around
-                    playerPos.pos->x = board_W - 2;
+                    tempHead.pos->x = board_W - 2;
                 break;
             case RIGHT:
-                if(playerPos.pos->x < board_W -2)
+                if(currentHead.pos->x < board_W -2)
                     //move within bounds
-                    playerPos.pos->x++;
+                    tempHead.pos->x++;
                 else
-                    playerPos.pos->x = 1;
+                    tempHead.pos->x = 1;
                 break;
         }
     } 
 
     //Iter 3: insert temp objPos to the head of the list
-
+    playerPosList->insertHead(tempHead);
     //Iter 3 later feature 2: 
             //check if the new temp objPos overlaps 
             //the new food position (get it from the GameMechs class)
