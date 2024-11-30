@@ -23,7 +23,7 @@ class GameMechs
         int MIN_SPEED;
         int gamespeed;
 
-        objPos food; 
+        objPos food; //easier path
 
     public:
         //initialize game mechanic-related parameters
@@ -32,14 +32,14 @@ class GameMechs
         // is this one needed at all? Do we have heap members?
         ~GameMechs(); 
 
-        bool getExitFlagStatus(); 
+        bool getExitFlagStatus() const;
         void setExitTrue();
-        bool getLoseFlagStatus();
+        bool getLoseFlagStatus() const;
         void setLoseFlag();
 
         //clear most recent collected ASCII input from the field
         //use this to make sure no input is double-processed
-        char getInput() ;
+        char getInput() const;
         void setInput(char this_input);
         void clearInput();
 
@@ -56,11 +56,18 @@ class GameMechs
         void incrementScore();
         
         // More methods should be added here
+        void collectAsynInput();
+
         int getMaxSpeed() const;
         int getMinSpeed() const;
         int getCurrentSpeed();
         int increment_speed();
         int decrease_speed();
+        
+        void generateFood(objPos blockOff);
+        objPos getFoodPos() const;
+
+
 
 
 };

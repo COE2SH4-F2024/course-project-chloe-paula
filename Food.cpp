@@ -1,5 +1,6 @@
 #include "Food.h"
 #include "GameMechs.h"
+#include "objPos.h"
 #include "MacUILib.h"
 // #include <iostream>
 #include <ctime> //for seeding rand()
@@ -17,7 +18,7 @@ Food::Food()
     listSize = 5;
     
     //Dynamically allocate the food position
-    food = new objPos(0,0,'F');
+    food->setObjPos(5,5,'o');
     
     //must access player position:
 
@@ -113,7 +114,7 @@ void Food::generateFood(objPos blockOff)
 
 
 //Getter method for obtaining a copy of current food position
-objPos Food::getFoodPos(int index)
+objPos Food::getFoodPos(/*int index*/) const
 {
     //     //DETECT COLLISION
     // for(int i = 0; i < listSize; i++){
@@ -128,7 +129,7 @@ objPos Food::getFoodPos(int index)
     //for now just do this cuz instructions are confusing and are based off 
     //only having one food item in iteration 2b
 
-    return *food;
+    return *food; //if thi swere in gamemechs: rturn food;
 
 } 
 
@@ -138,7 +139,7 @@ int Food::getListSize() const
     return listSize;
 }
 
-char Food::printFoodSymbol()
-{
-    MacUILib_printf("%c", food->getSymbol());
-}
+// char Food::printFoodSymbol()
+// {
+//     MacUILib_printf("%c", food->getSymbol());
+// }

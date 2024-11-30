@@ -34,9 +34,9 @@ class Food
         void generateFood(objPos blockOff);
 
         //getter method for obtaining a copy of current food position
-        objPos getFoodPos(int index);
+        objPos getFoodPos(/*int index*/) const;
         int getListSize() const;
-        char printFoodSymbol();
+        // char printFoodSymbol();
 };
 
 #endif

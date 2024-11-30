@@ -6,7 +6,7 @@
 #include "objPos.h"
 #include "GameMechs.h"
 #include "Player.h"
-#include "Food.h"
+// #include "Food.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ Player *myPlayer;
 //global pointer to GameMechs class
 GameMechs *myGM;
 //global pointer to Food class
-Food *snakeFood;
+// Food *snakeFood;
 
 //first iteration ASCII list (food)
 // const int itemlistsize = 5;
@@ -59,7 +59,7 @@ void Initialize(void)
     //Allocate memory for global objects on the heap
     myGM = new GameMechs();
     myPlayer = new Player(myGM);
-    snakeFood = new Food();
+    // snakeFood = new Food();
 
     //initialize arbitrary ascii chars (ITERATION 0):
     // asciiList[0].setObjPos(3, 6, 'A');
@@ -69,12 +69,13 @@ void Initialize(void)
     srand(time(NULL)); //seed the random number generator
 
     //Generate initial random snake food:
-    snakeFood->generateFood(myPlayer->getPlayerPos());
+    // snakeFood->generateFood(myPlayer->getPlayerPos());
 
 }
 
 void GetInput(void)
 {
+    myGM->collectAsynInput();
     char input_char = myGM->getInput();
 
     if(input_char != 0)
@@ -90,7 +91,7 @@ void GetInput(void)
                     break;
 
                 case 'f': case 'F':
-                    snakeFood->generateFood(myPlayer->getPlayerPos());
+                    // snakeFood->generateFood(myPlayer->getPlayerPos());
                     MacUILib_printf("debug: food regenerated\n");
                     break;
 
@@ -130,7 +131,9 @@ void DrawScreen(void)
     objPos playerPos = myPlayer->getPlayerPos();
     int playerX = playerPos.pos->x;
     int playerY = playerPos.pos->y;
-    char playerSymbol = playerPos.getSymbol();
+    char playerSymbol = playerPos.symbol; //was: playerPos.getSymbol();
+
+    objPos foodPos = myGM->getFoodPos();
 
     // int foodListSize = snakeFood->getListSize();
     
@@ -146,7 +149,7 @@ void DrawScreen(void)
             else if(i == playerX && j == playerY)
                 //draws player @
                 MacUILib_printf("%c", playerSymbol);
-            else
+            else if(i == foodPos.pos->x && j == foodPos.pos->y)
             {   //print the ascii list if their coordinates match
                 // bool foodDrawn = false;
                 
@@ -158,13 +161,11 @@ void DrawScreen(void)
                 // //         // asciiflag = true;
                 //         foodDrawn = true;
                 //         break;
-                if( i == snakeFood->getFoodPos(i).pos->x && j == snakeFood->getFoodPos(j).pos->y )
-                    //print the single food (iteration 2b)
-                    MacUILib_printf("%c", snakeFood->printFoodSymbol());                
-                // if(!foodDrawn) 
-                else
-                    MacUILib_printf(" "); //space if no ASCII item
+                
+                MacUILib_printf("%c", foodPos.symbol);                
             }
+            else
+                MacUILib_printf("%c", ' '); //space if no ASCII item
         } 
         MacUILib_printf("\n"); //move to next row with new line
     } 
@@ -212,7 +213,7 @@ void CleanUp(void)
     //delete heap memory
     delete myPlayer;
     delete myGM;
-    delete snakeFood;
+    // delete snakeFood;
 
     // for(int k = 0; k < itemlistsize; k++)
     //     delete asciiList[k].pos;
