@@ -14,11 +14,7 @@ objPosArrayList::objPosArrayList()
     aList = new objPos[arrayCapacity];
 
 }
-//destructor:
-objPosArrayList::~objPosArrayList()
-{
-    delete[] aList;
-}
+
 
 //copy constructor: added this based on what we think is missing
 objPosArrayList::objPosArrayList(const objPosArrayList &l)
@@ -27,11 +23,17 @@ objPosArrayList::objPosArrayList(const objPosArrayList &l)
     listSize = l.listSize;
     arrayCapacity = l.arrayCapacity;
     aList = new objPos[arrayCapacity];
-    for(int i = 0; i < listSize; i++)
+    for(int i = 0; i < listSize; i++){
         aList[i] = l.aList[i];
+    }
+        
 }
 
-//
+//destructor:
+objPosArrayList::~objPosArrayList()
+{
+    delete[] aList;
+}
 
 int objPosArrayList::getSize() const
 {
