@@ -13,10 +13,10 @@ objPosArrayList::objPosArrayList()
     //Allocate objPos array - 200-element on heap
     aList = new objPos[arrayCapacity];
    
-
-     for(int i=0; i<ARRAY_MAX_CAP;i++){
+    
+    for(int i=0; i<ARRAY_MAX_CAP;i++){
          (aList+i)->symbol = '0';
-     }
+    }
 
 
 }
