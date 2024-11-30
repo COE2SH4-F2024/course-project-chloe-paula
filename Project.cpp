@@ -116,7 +116,7 @@ void RunLogic(void)
     //most recent food position + symbol
     objPos currentFood = myGM->getFoodPos();
     objPosArrayList* currentPlayer = myPlayer->getPlayerPos();
-    objPos currentPlayer = currentPlayer;
+    objPos currentPlayer = currentPlayer->getHeadElement();
     objPos currentHead = currentPlayer->getHeadElement();
 
     if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
@@ -125,7 +125,7 @@ void RunLogic(void)
         myGM->incrementScore();
 
         //Generate a new food item at a rand valid position:
-        myGM->generateFood(*currentPlayer);
+        myGM->generateFood(currentHead);
 
         MacUILib_printf("Food eaten! New food generated. Current score: %d\n", myGM->getScore());
 
