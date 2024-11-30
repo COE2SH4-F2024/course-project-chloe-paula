@@ -46,15 +46,13 @@ objPosArrayList &objPosArrayList::operator=(const objPosArrayList &l)
 {
     if(this != &l)
     {
-        listSize = l.listSize;
-        arrayCapacity = l.arrayCapacity;
         
-        this->listSize;
-        this->arrayCapacity;
+        this->listSize = l.listSize;
+        this->arrayCapacity = l.arrayCapacity;
 
         for(int i = 0; i < listSize; i++)
         {
-            aList[i] = l.aList[i];
+            this->aList[i] = l.aList[i];
         }
     }
 
