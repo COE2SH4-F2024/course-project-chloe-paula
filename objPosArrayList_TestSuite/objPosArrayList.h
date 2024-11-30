@@ -28,6 +28,7 @@ class objPosArrayList
         void removeHead();
         void removeTail();
         
+        //getter
         objPos getHeadElement() const;
         objPos getTailElement() const;
         objPos getElement(int index) const;

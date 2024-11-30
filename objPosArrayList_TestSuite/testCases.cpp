@@ -75,6 +75,7 @@ void testInsertHead_1Element()
 
 	int expectedSize = 1;
 	int actualSize = thisList.getSize();
+	
 		
 	// First check the list size is 1
 	result &= assert_equal(expectedSize, actualSize);
@@ -85,7 +86,7 @@ void testInsertHead_1Element()
 	// Then check whether the head element is what we have inserted.
 	currentPos = thisList.getHeadElement();
 	actualCheck = samplePos.isPosEqual(&currentPos);
-
+	
 	result &= assert_equal(expectedCheck, actualCheck);
 
 

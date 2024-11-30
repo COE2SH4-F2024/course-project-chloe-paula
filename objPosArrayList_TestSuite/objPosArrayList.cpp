@@ -12,6 +12,12 @@ objPosArrayList::objPosArrayList()
     arrayCapacity = ARRAY_MAX_CAP; //200
     //Allocate objPos array - 200-element on heap
     aList = new objPos[arrayCapacity];
+   
+
+     for(int i=0; i<ARRAY_MAX_CAP;i++){
+         (aList+i)->symbol = '0';
+     }
+
 
 }
 
@@ -48,13 +54,21 @@ void objPosArrayList::insertHead(objPos thisPos)
 
     //ex. insert 9 to head
     //shuffle from tail to head until i = 1
-    if(listSize >= arrayCapacity) return;
-
-    for(int i = listSize; i > 0; i--)
+    char newSym = thisPos.getSymbol();
+    if(listSize >= arrayCapacity){
+        return;
+    } 
+    
+    for(int i = listSize; i > 0; i--){
         aList[i] = aList[i - 1]; //shifts elements down
-
-    aList[0].symbol = thisPos.symbol;
+    }
+    aList[0].symbol = newSym;
     listSize++;
+    std::cout << " size: " << listSize << std::endl;
+     std::cout << " sym: " << aList[0].symbol << std::endl;
+
+    
+   // return;
 
 }
 //easier of the two
@@ -102,8 +116,12 @@ objPos objPosArrayList::getTailElement() const
 objPos objPosArrayList::getElement(int index) const
 {
     //check if index out of bound
-    if(index < 0 ) index = 0;
-    else if(index >= listSize) index = listSize - 1;
+    if(index < 0 ){
+        index = 0;
+    } 
+    else if(index >= listSize){
+        index = listSize - 1;
+    } 
 
     return aList[index];
 }
