@@ -4,18 +4,25 @@
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
+    playerPosList = new objPosArrayList();
     myDir = STOP;
 
+    objPos headPos(thisGMRef->getBoardSizeX()/2,
+                    thisGMRef->getBoardSizeY()/2,
+                    '@'
+                );
+
     // more actions to be included... initialize player details
-    playerPos.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
-    playerPos.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
-    playerPos.symbol = '*'; //player symbol
+    // playerPos.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
+    // playerPos.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
+    // playerPos.symbol = '*'; //player symbol
 }
 
 
 Player::~Player()
 {
     // delete any heap members here
+    delete playerPosList;
 }
 
 objPos Player::getPlayerPos() const
