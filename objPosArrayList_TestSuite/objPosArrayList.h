@@ -17,7 +17,11 @@ class objPosArrayList
     public:
         objPosArrayList();
         ~objPosArrayList();
-//need copy constructor???
+        //need copy constructor???
+        objPosArrayList(const objPosArrayList &l);
+        //copy assignment constructor
+        objPosArrayList& operator=(const objPosArrayList &l);
+
         int getSize() const;
         void insertHead(objPos thisPos);
         void insertTail(objPos thisPos);
