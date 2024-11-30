@@ -41,6 +41,26 @@ objPosArrayList::~objPosArrayList()
     delete[] aList;
 }
 
+//copy assignment operator
+objPosArrayList &objPosArrayList::operator=(const objPosArrayList &l)
+{
+    if(this != &l)
+    {
+        listSize = l.listSize;
+        arrayCapacity = l.arrayCapacity;
+        
+        this->listSize;
+        this->arrayCapacity;
+
+        for(int i = 0; i < listSize; i++)
+        {
+            aList[i] = l.aList[i];
+        }
+    }
+
+    return *this;
+}
+
 int objPosArrayList::getSize() const
 {
     return listSize;
