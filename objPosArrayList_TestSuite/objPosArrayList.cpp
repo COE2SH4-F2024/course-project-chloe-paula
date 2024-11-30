@@ -75,18 +75,17 @@ void objPosArrayList::insertHead(objPos thisPos)
 
     //ex. insert 9 to head
     //shuffle from tail to head until i = 1
-    char newSym = thisPos.symbol; //was: thisPos.getSymbol();
-    if(listSize < 0 && listSize >= arrayCapacity){
+    
+    if(listSize >= arrayCapacity){
         return;
     } 
     
     for(int i = listSize; i > 0; i--){
         aList[i] = aList[i - 1]; //shifts elements down
     }
-    aList[0].symbol = newSym;
+    aList[0] = thisPos;
     listSize++;
-    std::cout << " size: " << listSize << std::endl;
-     std::cout << " sym: " << aList[0].symbol << std::endl;
+    
 
     
    // return;
