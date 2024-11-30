@@ -75,8 +75,8 @@ void objPosArrayList::insertHead(objPos thisPos)
 
     //ex. insert 9 to head
     //shuffle from tail to head until i = 1
-    char newSym = thisPos.getSymbol();
-    if(listSize >= arrayCapacity){
+    char newSym = thisPos.symbol; //was: thisPos.getSymbol();
+    if(listSize < 0 && listSize >= arrayCapacity){
         return;
     } 
     
