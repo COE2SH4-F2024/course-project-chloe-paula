@@ -414,9 +414,153 @@ void testRemoveTail_5Element()
 	tearDown(result);
 }
 
+//EXTRA TEST!!!
+/*
+void testOutOfBoundsAccess() {
+    printf("\n=== testOutOfBoundsAccess() ===\n");
+    bool result = true;
 
+    objPosArrayList thisList;
 
+    // Try accessing head or tail on an empty list
+    try {
+        thisList.getHeadElement();
+        result = false; // Should not reach here
+    } catch (const std::out_of_range &e) {
+        result &= true; // Expected exception
+    }
 
+    try {
+        thisList.getTailElement();
+        result = false; // Should not reach here
+    } catch (const std::out_of_range &e) {
+        result &= true; // Expected exception
+    }
+
+    // Add a few elements and test invalid indices
+    objPos samplePos(1, 1, 'a');
+    thisList.insertTail(samplePos);
+    thisList.insertTail(samplePos);
+
+    try {
+        thisList.getElement(-1); // Invalid index
+        result = false; // Should not reach here
+    } catch (const std::out_of_range &e) {
+        result &= true; // Expected exception
+    }
+
+    try {
+        thisList.getElement(thisList.getSize()); // Invalid index
+        result = false; // Should not reach here
+    } catch (const std::out_of_range &e) {
+        result &= true; // Expected exception
+    }
+
+    tearDown(result);
+}
+
+// Test Case: Full List Insertions
+void testFullList() {
+    printf("\n=== testFullList() ===\n");
+    bool result = true;
+
+    objPosArrayList thisList;
+    objPos samplePos(1, 1, 'b');
+
+    // Fill the list to capacity
+    for (int i = 0; i < ARRAY_MAX_CAP; ++i) {
+        thisList.insertTail(samplePos);
+    }
+
+    // Verify the size is equal to ARRAY_MAX_CAP
+    result &= assert_equal(thisList.getSize(), ARRAY_MAX_CAP);
+
+    // Try inserting one more element
+    try {
+        thisList.insertTail(samplePos);
+        result = false; // Should not reach here
+    } catch (const std::overflow_error &e) {
+        result &= true; // Expected exception
+    }
+
+    tearDown(result);
+}
+
+// Test Case: Stress Test
+void testStress() {
+    printf("\n=== testStress() ===\n");
+    bool result = true;
+
+    objPosArrayList thisList;
+    objPos samplePos(2, 3, 'x');
+
+    // Insert and remove repeatedly
+    for (int i = 0; i < 1000; ++i) {
+        thisList.insertHead(samplePos);
+        thisList.removeHead();
+    }
+
+    // The list should be empty
+    result &= assert_equal(thisList.getSize(), 0);
+
+    tearDown(result);
+}
+
+// Test Case: Mixed Operations
+void testMixedOperations() {
+    printf("\n=== testMixedOperations() ===\n");
+    bool result = true;
+
+    objPosArrayList thisList;
+    objPos pos1(1, 1, 'a'), pos2(2, 2, 'b'), pos3(3, 3, 'c');
+
+    // Insert at head and tail
+    thisList.insertHead(pos1);
+    thisList.insertTail(pos2);
+
+    // Check size and elements
+    result &= assert_equal(thisList.getSize(), 2);
+	objPos headElement = thisList.getHeadElement();
+	result &= pos1.isPosEqual(&headElement);
+
+	objPos tailElement = thisList.getTailElement();
+	result &= pos2.isPosEqual(&tailElement);
+
+	
+
+    // Insert more elements and remove alternately
+    thisList.insertTail(pos3);
+    thisList.removeHead(); // Remove pos1
+
+    result &= assert_equal(thisList.getSize(), 2);
+    result &= assert_equal(thisList.getHeadElement().getSymbol(), pos2.getSymbol());
+
+    tearDown(result);
+}
+
+// Test Case: Duplicate Elements
+void testDuplicateElements() {
+    printf("\n=== testDuplicateElements() ===\n");
+    bool result = true;
+
+    objPosArrayList thisList;
+    objPos duplicatePos(5, 5, 'z');
+
+    // Insert duplicates
+    for (int i = 0; i < 3; ++i) {
+        thisList.insertTail(duplicatePos);
+    }
+
+    // Verify size and elements
+    result &= assert_equal(thisList.getSize(), 3);
+    for (int i = 0; i < 3; ++i) {
+        objPos specificElement = thisList.getElement(i);
+		result &= duplicatePos.isPosEqual(&specificElement);
+    }
+
+    tearDown(result);
+}
+*/
 //===========================================================
 	bool runAllTests(int argc, char const *argv[]) {
 		
@@ -433,6 +577,15 @@ void testRemoveTail_5Element()
 
 		testRemoveTail_1Element();
 		testRemoveTail_5Element();
+
+		//extra tests
+		/*
+		testOutOfBoundsAccess();
+		testFullList();
+		testStress();
+		testMixedOperations();
+		testDuplicateElements();
+		*/
 		
 		return (successCount == totalAssertions);
 	}
