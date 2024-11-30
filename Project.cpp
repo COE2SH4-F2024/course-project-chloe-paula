@@ -116,7 +116,6 @@ void RunLogic(void)
     //most recent food position + symbol
     objPos currentFood = myGM->getFoodPos();
     objPosArrayList* currentPlayer = myPlayer->getPlayerPos();
-    objPos currentPlayer = currentPlayer->getHeadElement();
     objPos currentHead = currentPlayer->getHeadElement();
 
     if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
@@ -161,6 +160,8 @@ void DrawScreen(void)
     {
         for(i = 0; i < boardX; i++) 
         {
+            bool printed = false;
+
             for(int k = 0; k < playerSize; k++)
             {
                 objPos thisSeg = playerPos->getElement(k);
@@ -168,43 +169,48 @@ void DrawScreen(void)
                 //iter 3: check if curr seg x,y, pos 
                 //matches the i,j corrd
                 //if yes print player
-                if()
-                {
 
+                if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                {
+                    MacUILib_printf("%c", thisSeg.symbol);
+                    printed = true;
                 }
                 //watch out!
                 //we need to skip the if-else block below
                 //if we have printed something in the for loop
             }    
-
+            
             //at the end of the for loop, do something to determine
             //whether to conitnue with the if-else of 
             //or to move on to the next iteration of  i,j
 
             // asciiflag = false;
-            if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
-                //draws boarder
-                MacUILib_printf("%c", BOARDER_CHAR); 
-            // else if(i == playerX && j == playerY)
-            //     //draws player @
-            //     MacUILib_printf("%c", playerSymbol);
-            else if(i == foodPos.pos->x && j == foodPos.pos->y)
-            {   //print the ascii list if their coordinates match
-                // bool foodDrawn = false;
-                
-                // // for(k = 0; k < foodListSize; k++)
-                // // {
-                // //     if(snakeFood->getFoodPos(k).pos->x == i && snakeFood->getFoodPos(k).pos->y == j)
-                // //     {
-                // //         MacUILib_printf("%c", snakeFood->getFoodPos(k).symbol);
-                // //         // asciiflag = true;
-                //         foodDrawn = true;
-                //         break;
-                
-                MacUILib_printf("%c", foodPos.symbol);                
+            if(!printed)
+            {
+                if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
+                            //draws boarder
+                    MacUILib_printf("%c", BOARDER_CHAR); 
+                        // else if(i == playerX && j == playerY)
+                        //     //draws player @
+                        //     MacUILib_printf("%c", playerSymbol);
+                else if(i == foodPos.pos->x && j == foodPos.pos->y)
+                {   //print the ascii list if their coordinates match
+                            // bool foodDrawn = false;
+                            
+                            // // for(k = 0; k < foodListSize; k++)
+                            // // {
+                            // //     if(snakeFood->getFoodPos(k).pos->x == i && snakeFood->getFoodPos(k).pos->y == j)
+                            // //     {
+                            // //         MacUILib_printf("%c", snakeFood->getFoodPos(k).symbol);
+                            // //         // asciiflag = true;
+                            //         foodDrawn = true;
+                            //         break;
+                            
+                    MacUILib_printf("%c", foodPos.symbol);                
+                }
+                else
+                    MacUILib_printf("%c", ' '); //space if no ASCII item
             }
-            else
-                MacUILib_printf("%c", ' '); //space if no ASCII item
         } 
         MacUILib_printf("\n"); //move to next row with new line
     } 
