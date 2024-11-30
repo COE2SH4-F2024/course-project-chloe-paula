@@ -115,15 +115,17 @@ void RunLogic(void)
 
     //most recent food position + symbol
     objPos currentFood = myGM->getFoodPos();
-    objPos currentPlayer = myPlayer->getPlayerPos();
+    objPosArrayList* currentPlayer = myPlayer->getPlayerPos();
+    objPos currentPlayer = currentPlayer;
+    objPos currentHead = currentPlayer->getHeadElement();
 
-    if(currentPlayer.pos->x == currentFood.pos->x && currentPlayer.pos->y == currentFood.pos->y)
+    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
     {
         //Increment score on collision:
         myGM->incrementScore();
 
         //Generate a new food item at a rand valid position:
-        myGM->generateFood(currentPlayer);
+        myGM->generateFood(*currentPlayer);
 
         MacUILib_printf("Food eaten! New food generated. Current score: %d\n", myGM->getScore());
 
@@ -145,12 +147,12 @@ void DrawScreen(void)
     //get player position and symbol
     objPosArrayList* playerPos = myPlayer->getPlayerPos();
     int playerSize = playerPos->getSize();
-
-    int playerX = playerPos.pos->x;
-    int playerY = playerPos.pos->y;
-    char playerSymbol = playerPos.symbol; //was: playerPos.getSymbol();
-
+    
     objPos foodPos = myGM->getFoodPos();
+
+    // int playerX = playerPos.pos->x;
+    // int playerY = playerPos.pos->y;
+    // char playerSymbol = playerPos.symbol; //was: playerPos.getSymbol();
 
     // int foodListSize = snakeFood->getListSize();
     
@@ -166,7 +168,10 @@ void DrawScreen(void)
                 //iter 3: check if curr seg x,y, pos 
                 //matches the i,j corrd
                 //if yes print player
+                if()
+                {
 
+                }
                 //watch out!
                 //we need to skip the if-else block below
                 //if we have printed something in the for loop
