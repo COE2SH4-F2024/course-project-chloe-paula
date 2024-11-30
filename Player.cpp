@@ -133,6 +133,12 @@ void Player::movePlayer()
             //check if the new temp objPos overlaps 
             //the new food position (get it from the GameMechs class)
 
+            //use isPosEqual() method from objPos class
+
+            //If overlapped, that means food consumed, DO NOT REMOVE SNAKE TAIL
+            //and take the respective actions to increase score
+
+            //if NOT overlapped, remove tail and complete movement
 }       
 
 
