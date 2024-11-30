@@ -39,7 +39,7 @@ objPos &objPos::operator=(const objPos &o)
     if(this != &o) //to make sure no self-assigning
     {
         delete pos; // free existing memory
-        pos = new Pos; //allocate new memory
+        pos = new Pos(*o.pos); //allocate new memory
         pos->x = o.pos->x;
         pos->y = o.pos->y;
         symbol = o.symbol;

@@ -113,6 +113,21 @@ void RunLogic(void)
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
 
+    //most recent food position + symbol
+    objPos currentFood = myGM->getFoodPos();
+    objPos currentPlayer = myPlayer->getPlayerPos();
+
+    if(currentPlayer.pos->x == currentFood.pos->x && currentPlayer.pos->y == currentFood.pos->y)
+    {
+        //Increment score on collision:
+        myGM->incrementScore();
+
+        //Generate a new food item at a rand valid position:
+        myGM->generateFood(currentPlayer);
+
+        MacUILib_printf("Food eaten! New food generated. Current score: %d\n", myGM->getScore());
+        
+    }
     //possibly place detect collision code for iteration 3:
 }
 

@@ -6,7 +6,7 @@
 #include <ctime> //for seeding rand()
 #include <cstdlib> //for rand()
 
-
+ 
 //global pointer to GameMechs class
 GameMechs *GM;
 
@@ -18,7 +18,7 @@ Food::Food()
     listSize = 5;
     
     //Dynamically allocate the food position
-    food->setObjPos(5,5,'o');
+    food->setObjPos(-10,-10,'o');
     
     //must access player position:
 

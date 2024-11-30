@@ -138,68 +138,43 @@ int GameMechs::decrease_speed()
         gamespeed--;
 }
 
+
+
+
 void GameMechs::generateFood(objPos blockOff)
 {
-    // int generatedItems = 0;
-    // int xRange = getBoardSizeX();
-    // int yRange = getBoardSizeY();
-    // int ascii_range = rand() % 3; // three options for ASCII 
-    // int i = 0;
+    bool validFood = false;
+    int x_random, y_random;
+    char newFoodSym;
+
+    int xRange = getBoardSizeX();
+    int yRange = getBoardSizeY();
 
     // //generate random food from ascii
-    // while(generatedItems < listSize){
-    // do
-    // {}
-    // int x_random = 0, y_random = 0;
-    // char food_symbol;
-    // bool unique = false; 
+    while(!validFood)
+    {
+    
+        x_random = (rand() % xRange) + 1; 
+        y_random = (rand() % yRange) + 1;
+        
+        //Generate random fool: (Three options types: num, a, A) 
+        int ascii_range = rand() % 3;  
+        if (ascii_range == 0)
+            newFoodSym = '0' + rand() % 10; //range is 0-9
+        else if (ascii_range == 1)
+           newFoodSym = 'a' + rand() % 26; //range a-z : 97-122 ... 25 difference, so range here is 0-25
+        else
+            newFoodSym = 'A' + rand() % 26; //ascii range 65-90
 
-    // // while(!unique){
-    // // Assume the new random position and symbol are unique
-    //     unique = true;
+        //check if new food is overlapping with player:
+        if (x_random != blockOff.pos->x && y_random != blockOff.pos->y && food.symbol != blockOff.symbol) 
+            validFood = true;  //valid new food
+    }
 
-    //     //generates random coordinates within range (1-17)
-    //     x_random = (rand() % xRange) + 1; 
-    //     y_random = (rand() % yRange) + 1;
+    food.pos->x = x_random;
+    food.pos->y = y_random;
+    food.symbol = newFoodSym;
 
-    //     //generates random ASCII char
-    //     if (ascii_range == 0)
-    //         food_symbol = '0' + rand() % 10; //range is 0-9
-    //     else if (ascii_range == 1)
-    //         food_symbol = 'a' + rand() % 26; //range a-z : 97-122 ... 25 difference, so range here is 0-25
-    //     else
-    //         food_symbol = 'A' + rand() % 26; //ascii range 65-90
-
-    //     //Important checks to ensure no repeated coordinates or food items:
-    //     if (x_random == blockOff.pos->x && y_random == blockOff.pos->y) 
-    //         //checks if food pos is the same as the player
-    //         unique = false;  // Not a unique position
-    //     for (i = 0; i < generatedItems && unique; i++) 
-    //     { 
-    //         //check through all the iterations if repeated coordinates
-    //         if (food[i].pos->x == x_random && food[i].pos->y == y_random) 
-    //         {
-    //             unique = false; // Not a unique position
-    //             break;
-    //         }
-    //     }
-    //     for (i = 0; i < generatedItems && unique; i++) 
-    //     { 
-    //         //checks if the symbol is repeated
-    //         if (food[i].symbol == food_symbol) 
-    //         { 
-    //             unique = 0; // Not a unique character
-    //             break;
-    //         }   
-    //     }
-    // }
-    // //if PASSED all checks: both positions and symbol are unique (=1)
-    // if (unique) 
-    // { 
-    //     food[generatedItems] = {x_random, y_random, food_symbol};
-    //     generatedItems++; // Move to next item
-    // }
-    // }
 }
 
 
