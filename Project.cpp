@@ -113,22 +113,6 @@ void RunLogic(void)
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
 
-    //most recent food position + symbol
-    objPos currentFood = myGM->getFoodPos();
-    objPosArrayList* currentPlayer = myPlayer->getPlayerPos();
-    objPos currentHead = currentPlayer->getHeadElement();
-
-    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
-    {
-        //Increment score on collision:
-        myGM->incrementScore();
-
-        //Generate a new food item at a rand valid position:
-        myGM->generateFood(currentHead);
-
-        MacUILib_printf("Food eaten! New food generated. Current score: %d\n", myGM->getScore());
-
-    }
     //possibly place detect collision code for iteration 3:
 }
 
@@ -156,13 +140,11 @@ void DrawScreen(void)
     // int foodListSize = snakeFood->getListSize();
     
     //draw the board
-    bool printed = false;
     for(j = 0; j < boardY; j++) 
     {
         for(i = 0; i < boardX; i++) 
         {
-            
-
+            bool printed = false;
             for(int k = 0; k < playerSize; k++)
             {
                 objPos thisSeg = playerPos->getElement(k);
@@ -170,7 +152,7 @@ void DrawScreen(void)
                 //iter 3: check if curr seg x,y, pos 
                 //matches the i,j corrd
                 //if yes print player
-                printed = false;
+                // printed = false;
                 if(thisSeg.pos->x == i && thisSeg.pos->y == j)
                 {
                     MacUILib_printf("%c", thisSeg.symbol);
