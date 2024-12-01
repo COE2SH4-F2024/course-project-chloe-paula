@@ -154,9 +154,7 @@ void DrawScreen(void)
                 //matches the i,j corrd
                 //if yes print player
                 // printed = false;
-                if(myGM->getLoseFlagStatus()==true){
-                    printed = true;
-                }
+                
                 if(thisSeg.pos->x == i && thisSeg.pos->y == j)
                 {
                     MacUILib_printf("%c", thisSeg.symbol);
@@ -174,11 +172,11 @@ void DrawScreen(void)
             {
                 if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
                             //draws boarder
-                    MacUILib_printf("%c", BOARDER_CHAR); 
+                    MacUILib_printf("%c", BOARDER_CHAR); //print boarder
                         // else if(i == playerX && j == playerY)
                         //     //draws player @
                         //     MacUILib_printf("%c", playerSymbol);
-                else if(i == foodPos.pos->x && j == foodPos.pos->y)
+                else if(i == foodPos.pos->x && j == foodPos.pos->y)//print food
                 {   //print the ascii list if their coordinates match
                             // bool foodDrawn = false;
                             
@@ -193,7 +191,7 @@ void DrawScreen(void)
                             
                     MacUILib_printf("%c", foodPos.symbol);                
                 }
-                else
+                else if(i<boardX&&j<boardY)
                     MacUILib_printf("%c", ' '); //space if no ASCII item
             }
         } 

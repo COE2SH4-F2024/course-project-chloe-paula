@@ -38,7 +38,7 @@ void Player::updatePlayerDir()
 {
     char input = mainGameMechsRef->getInput(); 
 
-            // PPA2/3 input processing logic for direction!!   
+    // PPA2/3 input processing logic for direction!!   
      //note change direction = myDir
      if(input != 0) 
     {
@@ -94,10 +94,14 @@ void Player::movePlayer()
     objPos currentHead = playerPosList->getHeadElement();
     objPos tempHead = currentHead;
 
-    
+    if(collided){
+        myDir = STOP;
+        mainGameMechsRef->setLoseFlag();
+        return;
 
-    if(myDir != STOP && !collided)
-    {
+    }
+    if(myDir!=STOP){
+    
         switch(myDir)
         {
             //iteration 3:
@@ -132,34 +136,47 @@ void Player::movePlayer()
                 break;
         }
          //most recent food position + symbol
-    objPos currentFood = mainGameMechsRef->getFoodPos();
-    // objPosArrayList* currentPlayer = playerPosList();
+        objPos currentFood = mainGameMechsRef->getFoodPos();
+        // objPosArrayList* currentPlayer = playerPosList();
+        // switch(myDir){
+        //     case UP:
+        //         if(playerPosList->getElement((tempHead.getObjPos().pos->x)-1).getSymbol()=='@'){
+        //             collided = true;
+        //         }
+        //     case DOWN:
+        //         if(playerPosList->getElement((tempHead.getObjPos().pos->x)+1).getSymbol()=='@'){
+        //             collided = true;
+        //         }
+        //     case LEFT:
+        //         if(playerPosList->getElement((tempHead.getObjPos().pos->y)-1).getSymbol()=='@'){
+        //             collided = true;
+        //         }
+        //     case RIGHT:
+        //         if(playerPosList->getElement((tempHead.getObjPos().pos->y)+1).getSymbol()=='@'){
+        //             collided = true;
+        //         }
+        // }
 
-    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
-    {
-        //Increment score on collision:
-        mainGameMechsRef->incrementScore();
-        playerPosList->insertHead(tempHead);
-        //Generate a new food item at a rand valid position:
-        mainGameMechsRef->generateFood(playerPosList);
+        if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
+        {
+            //Increment score on collision:
+            mainGameMechsRef->incrementScore();
+            playerPosList->insertHead(tempHead);
+            //Generate a new food item at a rand valid position:
+            mainGameMechsRef->generateFood(playerPosList);
 
-        // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
-    }
-    else
-    {   
-        playerPosList->insertHead(tempHead);
-        playerPosList->removeTail();
-    }
-    }
-        // playerPosList->insertHead(tempHead);
-        // playerPosList->removeTail();
-    if(collided){
-            myDir = STOP;
-            playerPosList->removeHead();
-            mainGameMechsRef->setLoseFlag();
+            // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
 
-    }
-} 
+        }
+        else
+        {       
+                
+                playerPosList->insertHead(tempHead);
+                playerPosList->removeTail();  
+                
+
+        }
+    } 
 
    
     //Iter 3: insert temp objPos to the head of the list
@@ -182,10 +199,37 @@ bool Player::checkSelfCollision(){
     objPos head = playerPosList->getHeadElement();
     objPos body;
     bool collide = false;
+    //objPos tempHead = playerPosList->getHeadElement();
+
     for(int i = 1; i < playerPosList->getSize();i++){
         body = playerPosList->getElement(i);
+    // if(myDir!=STOP){
+    //     switch(myDir){
+    //         case UP:
+    //             if(playerPosList->getElement((tempHead.getObjPos().pos->x)-1).getSymbol()=='@'){
+    //                 collide = true;
+    //                 break;
+    //             }
+    //         case DOWN:
+    //             if(playerPosList->getElement((tempHead.getObjPos().pos->x)+1).getSymbol()=='@'){
+    //                 collide = true;
+    //                 break;
+    //             }
+    //         case LEFT:
+    //             if(playerPosList->getElement((tempHead.getObjPos().pos->y)-1).getSymbol()=='@'){
+    //                 collide = true;
+    //                 break;
+    //             }
+    //         case RIGHT:
+    //             if(playerPosList->getElement((tempHead.getObjPos().pos->y)+1).getSymbol()=='@'){
+    //                 collide = true;
+    //                 break;
+    //             }
+    //     }
+    // }
         if(head.pos->x == body.pos->x && head.pos->y == body.pos->y){
             collide = true;
+            break;
         }
     }
 
