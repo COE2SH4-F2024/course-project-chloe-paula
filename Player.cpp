@@ -84,7 +84,7 @@ void Player::movePlayer()
     //easy access to board dimensions:
     int board_H = mainGameMechsRef->getBoardSizeY();
     int board_W = mainGameMechsRef->getBoardSizeX();
-    bool collided;
+    bool collided = checkSelfCollision();
 
     //Iteration 3:
     //  create temp objPos to calculate the new head position
@@ -96,7 +96,7 @@ void Player::movePlayer()
 
     
 
-    if(myDir != STOP)
+    if(myDir != STOP && !collided)
     {
         switch(myDir)
         {
@@ -144,22 +144,21 @@ void Player::movePlayer()
         mainGameMechsRef->generateFood(playerPosList);
 
         // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
-
     }
     else
     {   
-        collided = checkSelfCollision();
-        if(collided){
-            mainGameMechsRef->setLoseFlag();
-        }else{
-            playerPosList->insertHead(tempHead);
-            playerPosList->removeTail();
-        }
-        
-        
+        playerPosList->insertHead(tempHead);
+        playerPosList->removeTail();
+    }
     }
         // playerPosList->insertHead(tempHead);
         // playerPosList->removeTail();
+    if(collided){
+            myDir = STOP;
+            playerPosList->removeHead();
+            mainGameMechsRef->setLoseFlag();
+
+    }
 } 
 
    
@@ -175,7 +174,7 @@ void Player::movePlayer()
             //and take the respective actions to increase score
 
             //if NOT overlapped, remove tail and complete movement
-}       
+  
 
 
 // More methods to be added

@@ -171,7 +171,7 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
         //check if new food is overlapping with player:
         for(int i = 0; i < blockOff->getSize(); i++)
         {   
-            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y && food.symbol == blockOff->getElement(i).symbol) 
+            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y) 
                 validFood = false;  //valid new food
                 break;
             
