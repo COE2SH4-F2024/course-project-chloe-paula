@@ -12,7 +12,7 @@ Player::Player(GameMechs* thisGMRef)
                     '@'
                 );
     playerPosList->insertHead(headPos);
-
+ 
     // more actions to be included... initialize player details
     // currentHead.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
     // currentHead.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
@@ -125,10 +125,12 @@ void Player::movePlayer()
                     tempHead.pos->x = 1;
                 break;
         }
+        playerPosList->insertHead(tempHead);
+        playerPosList->removeTail();
     } 
 
     //Iter 3: insert temp objPos to the head of the list
-    playerPosList->insertHead(tempHead);
+    
     //Iter 3 later feature 2: 
             //check if the new temp objPos overlaps 
             //the new food position (get it from the GameMechs class)
