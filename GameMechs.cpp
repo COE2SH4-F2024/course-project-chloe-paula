@@ -153,11 +153,11 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
     // //generate random food from ascii
     
     do{
-    
+        // gen rand pos
         x_random = (rand() % (xRange-2)) + 1; 
         y_random = (rand() % (yRange-2)) + 1;
         
-        //Generate random fool: (Three options types: num, a, A) 
+        //Generate random food: (Three options types: num, a, A) 
         int ascii_range = rand() % 3;  
         if (ascii_range == 0)
             newFoodSym = '0' + rand() % 10; //range is 0-9
@@ -166,15 +166,19 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
         else
             newFoodSym = 'A' + rand() % 26; //ascii range 65-90
         
-        
+        //assume its valid
         validFood = true;
-        //check if new food is overlapping with player:
-        for(int i = 0; i < blockOff->getSize(); i++)
+
+
+        //check if really valid??(new food is overlapping with player:)
+        for(int i = 0; i < blockOff->getSize(); i++)//go thru all elements of snake
         {   
-            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y && food.symbol == blockOff->getElement(i).symbol) 
-                validFood = false;  //valid new food
+            //see if the new food gen is same pos as snake elements
+            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y) //&& food.symbol == blockOff->getElement(i).symbol
+            {
+                validFood = false;  //if is same...then its false.. try again
                 break;
-            
+            }
         }
 
         if(validFood){
@@ -182,10 +186,8 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
             food.pos->y = y_random;
             food.symbol = newFoodSym;
         }
-        
-    }while(!validFood);
 
-    
+    }while(!validFood);
 
 }
 
