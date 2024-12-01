@@ -11,7 +11,6 @@ Player::Player(GameMechs* thisGMRef)
                     thisGMRef->getBoardSizeY()/2,
                     '@'
                 );
-    
     playerPosList->insertHead(headPos);
     
     
