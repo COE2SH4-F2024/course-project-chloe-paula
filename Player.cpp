@@ -10,7 +10,7 @@ Player::Player(GameMechs* thisGMRef)
     objPos headPos(thisGMRef->getBoardSizeX()/2,
                     thisGMRef->getBoardSizeY()/2,
                     '@'
-                );
+                ); //instructions says make char = *
     playerPosList->insertHead(headPos);
  
     // more actions to be included... initialize player details
