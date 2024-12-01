@@ -11,7 +11,10 @@ Player::Player(GameMechs* thisGMRef)
                     thisGMRef->getBoardSizeY()/2,
                     '@'
                 );
+    
     playerPosList->insertHead(headPos);
+    
+    
  
     // more actions to be included... initialize player details
     // currentHead.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
@@ -124,6 +127,7 @@ void Player::movePlayer()
                 else
                     tempHead.pos->x = 1;
                 break;
+            case STOP:
         }
         playerPosList->insertHead(tempHead);
         playerPosList->removeTail();
