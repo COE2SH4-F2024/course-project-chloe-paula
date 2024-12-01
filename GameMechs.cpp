@@ -154,8 +154,8 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
     while(!validFood)
     {
     
-        x_random = (rand() % xRange) + 1; 
-        y_random = (rand() % yRange) + 1;
+        x_random = (rand() % (xRange - 2)) + 1; 
+        y_random = (rand() % (yRange - 2)) + 1;
         
         //Generate random fool: (Three options types: num, a, A) 
         int ascii_range = rand() % 3;  
