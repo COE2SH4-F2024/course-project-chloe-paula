@@ -153,7 +153,7 @@ void DrawScreen(void)
                 //matches the i,j corrd
                 //if yes print player
                 // printed = false;
-                if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                if(thisSeg.pos->x == i && thisSeg.pos->y == j )
                 {
                     MacUILib_printf("%c", thisSeg.symbol);
                     printed = true;
