@@ -151,11 +151,11 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
     int yRange = getBoardSizeY();
 
     // //generate random food from ascii
-    while(!validFood)
-    {
     
-        x_random = (rand() % (xRange - 2)) + 1; 
-        y_random = (rand() % (yRange - 2)) + 1;
+    do{
+    
+        x_random = (rand() % (xRange-2)) + 1; 
+        y_random = (rand() % (yRange-2)) + 1;
         
         //Generate random fool: (Three options types: num, a, A) 
         int ascii_range = rand() % 3;  
@@ -165,22 +165,27 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
            newFoodSym = 'a' + rand() % 26; //range a-z : 97-122 ... 25 difference, so range here is 0-25
         else
             newFoodSym = 'A' + rand() % 26; //ascii range 65-90
-
+        
+        
+        validFood = true;
         //check if new food is overlapping with player:
         for(int i = 0; i < blockOff->getSize(); i++)
-        {
-            for(int j = 0; j < blockOff->getSize(); j++)
-            {
-                if (x_random != blockOff->getElement(i).pos->x && y_random != blockOff->getElement(i).pos->y && food.symbol != blockOff->getElement(i).symbol) 
-                validFood = true;  //valid new food
-            }
+        {   
+            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y && food.symbol == blockOff->getElement(i).symbol) 
+                validFood = false;  //valid new food
+                break;
+            
+        }
+
+        if(validFood){
+            food.pos->x = x_random;
+            food.pos->y = y_random;
+            food.symbol = newFoodSym;
         }
         
-    }
+    }while(!validFood);
 
-    food.pos->x = x_random;
-    food.pos->y = y_random;
-    food.symbol = newFoodSym;
+    
 
 }
 
