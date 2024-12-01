@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include "MacUILib.h"
 
 Player::Player(GameMechs* thisGMRef)
 {
@@ -94,7 +94,7 @@ void Player::movePlayer()
     //      as a good starting point.
 
     objPos currentHead = playerPosList->getHeadElement();
-    objPos tempHead = playerPosList->getHeadElement();
+    objPos tempHead = currentHead;
     if(myDir != STOP)
     {
         switch(myDir)
@@ -129,12 +129,33 @@ void Player::movePlayer()
                 else
                     tempHead.pos->x = 1;
                 break;
-            case STOP:
+            // case STOP:
         }
+         //most recent food position + symbol
+    objPos currentFood = mainGameMechsRef->getFoodPos();
+    // objPosArrayList* currentPlayer = playerPosList();
+
+    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
+    {
+        //Increment score on collision:
+        mainGameMechsRef->incrementScore();
+        playerPosList->insertHead(tempHead);
+        //Generate a new food item at a rand valid position:
+        mainGameMechsRef->generateFood(currentHead);
+
+        // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
+
+    }
+    else
+    {
         playerPosList->insertHead(tempHead);
         playerPosList->removeTail();
+    }
+        // playerPosList->insertHead(tempHead);
+        // playerPosList->removeTail();
     } 
 
+   
     //Iter 3: insert temp objPos to the head of the list
     
     //Iter 3 later feature 2: 
