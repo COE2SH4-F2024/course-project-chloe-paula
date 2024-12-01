@@ -64,7 +64,7 @@ class GameMechs
         int increment_speed();
         int decrease_speed();
         
-        void generateFood(objPos blockOff);
+        void generateFood(objPosArrayList* blockOff);
         objPos getFoodPos() const;
 
 

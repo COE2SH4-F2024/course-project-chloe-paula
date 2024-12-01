@@ -141,7 +141,7 @@ int GameMechs::decrease_speed()
 
 
 
-void GameMechs::generateFood(objPos blockOff)
+void GameMechs::generateFood(objPosArrayList* blockOff)
 {
     bool validFood = false;
     int x_random, y_random;
@@ -167,8 +167,15 @@ void GameMechs::generateFood(objPos blockOff)
             newFoodSym = 'A' + rand() % 26; //ascii range 65-90
 
         //check if new food is overlapping with player:
-        if (x_random != blockOff.pos->x && y_random != blockOff.pos->y && food.symbol != blockOff.symbol) 
-            validFood = true;  //valid new food
+        for(int i = 0; i < blockOff->getSize(); i++)
+        {
+            for(int j = 0; j < blockOff->getSize(); j++)
+            {
+                if (x_random != blockOff->getElement(i).pos->x && y_random != blockOff->getElement(i).pos->y && food.symbol != blockOff->getElement(i).symbol) 
+                validFood = true;  //valid new food
+            }
+        }
+        
     }
 
     food.pos->x = x_random;

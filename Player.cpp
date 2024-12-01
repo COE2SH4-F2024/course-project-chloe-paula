@@ -141,7 +141,7 @@ void Player::movePlayer()
         mainGameMechsRef->incrementScore();
         playerPosList->insertHead(tempHead);
         //Generate a new food item at a rand valid position:
-        mainGameMechsRef->generateFood(currentHead);
+        mainGameMechsRef->generateFood(playerPosList);
 
         // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
 
