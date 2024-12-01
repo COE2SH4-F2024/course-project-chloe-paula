@@ -145,6 +145,7 @@ void DrawScreen(void)
         for(i = 0; i < boardX; i++) 
         {
             bool printed = false;
+            
             for(int k = 0; k < playerSize; k++)
             {
                 objPos thisSeg = playerPos->getElement(k);
@@ -153,6 +154,9 @@ void DrawScreen(void)
                 //matches the i,j corrd
                 //if yes print player
                 // printed = false;
+                if(myGM->getLoseFlagStatus()==true){
+                    printed = true;
+                }
                 if(thisSeg.pos->x == i && thisSeg.pos->y == j)
                 {
                     MacUILib_printf("%c", thisSeg.symbol);
@@ -162,11 +166,9 @@ void DrawScreen(void)
                 //we need to skip the if-else block below
                 //if we have printed something in the for loop
             }    
-            
             //at the end of the for loop, do something to determine
             //whether to conitnue with the if-else of 
             //or to move on to the next iteration of  i,j
-
             // asciiflag = false;
             if(!printed)
             {

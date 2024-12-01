@@ -84,6 +84,7 @@ void Player::movePlayer()
     //easy access to board dimensions:
     int board_H = mainGameMechsRef->getBoardSizeY();
     int board_W = mainGameMechsRef->getBoardSizeX();
+    bool collided;
 
     //Iteration 3:
     //  create temp objPos to calculate the new head position
@@ -92,6 +93,9 @@ void Player::movePlayer()
 
     objPos currentHead = playerPosList->getHeadElement();
     objPos tempHead = currentHead;
+
+    
+
     if(myDir != STOP)
     {
         switch(myDir)
@@ -126,7 +130,6 @@ void Player::movePlayer()
                 else
                     tempHead.pos->x = 1;
                 break;
-            // case STOP:
         }
          //most recent food position + symbol
     objPos currentFood = mainGameMechsRef->getFoodPos();
@@ -144,13 +147,20 @@ void Player::movePlayer()
 
     }
     else
-    {
-        playerPosList->insertHead(tempHead);
-        playerPosList->removeTail();
+    {   
+        collided = checkSelfCollision();
+        if(collided){
+            mainGameMechsRef->setLoseFlag();
+        }else{
+            playerPosList->insertHead(tempHead);
+            playerPosList->removeTail();
+        }
+        
+        
     }
         // playerPosList->insertHead(tempHead);
         // playerPosList->removeTail();
-    } 
+} 
 
    
     //Iter 3: insert temp objPos to the head of the list
@@ -169,3 +179,16 @@ void Player::movePlayer()
 
 
 // More methods to be added
+bool Player::checkSelfCollision(){
+    objPos head = playerPosList->getHeadElement();
+    objPos body;
+    bool collide = false;
+    for(int i = 1; i < playerPosList->getSize();i++){
+        body = playerPosList->getElement(i);
+        if(head.pos->x == body.pos->x && head.pos->y == body.pos->y){
+            collide = true;
+        }
+    }
+
+    return collide;
+}
