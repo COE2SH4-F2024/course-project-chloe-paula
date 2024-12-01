@@ -156,12 +156,12 @@ void DrawScreen(void)
     // int foodListSize = snakeFood->getListSize();
     
     //draw the board
-    bool printed = false;
+    
     for(j = 0; j < boardY; j++) 
     {
         for(i = 0; i < boardX; i++) 
         {
-            
+            bool printed = false;
 
             for(int k = 0; k < playerSize; k++)
             {
@@ -170,7 +170,7 @@ void DrawScreen(void)
                 //iter 3: check if curr seg x,y, pos 
                 //matches the i,j corrd
                 //if yes print player
-                printed = false;
+                //printed = false;
                 if(thisSeg.pos->x == i && thisSeg.pos->y == j)
                 {
                     MacUILib_printf("%c", thisSeg.symbol);

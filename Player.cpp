@@ -12,6 +12,9 @@ Player::Player(GameMechs* thisGMRef)
                     '@'
                 );
     playerPosList->insertHead(headPos);
+    playerPosList->insertHead(headPos);
+    playerPosList->insertHead(headPos);
+    playerPosList->insertHead(headPos);
     
     
  
