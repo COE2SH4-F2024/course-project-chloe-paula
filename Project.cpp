@@ -197,7 +197,8 @@ void DrawScreen(void)
         } 
         MacUILib_printf("\n"); //move to next row with new line
     } 
-    MacUILib_printf("Press + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
+    MacUILib_printf("Score: %d",myGM->getScore());
+    MacUILib_printf("\nPress + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
     MacUILib_printf("To EXIT GAME: press ESCAPE, ENTER or SPACE button");
 }
     
