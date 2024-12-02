@@ -42,6 +42,10 @@ class Player
         // Checks if the snake's head collides with its body
         bool checkSelfCollision();
 
+        // bool checkFoodConsumption();
+
+        // void increasePlayerLength();
+
     private:
         // Dynamic list representing the snake's body
         objPosArrayList* playerPosList; 

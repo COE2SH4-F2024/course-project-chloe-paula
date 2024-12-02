@@ -49,6 +49,8 @@ class objPosArrayList
         void insertTail(objPos thisPos);    // Sets Tail element (last item)
         void removeHead();                  // Removes Head element
         void removeTail();                  // Removes Tail element
+        void removeElement(int index);      //  Removes element at an index
+
         
         //  For visual debugging
         void printList();   //prints the list for debugging purposes

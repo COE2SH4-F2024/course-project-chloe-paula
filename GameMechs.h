@@ -26,7 +26,8 @@ class GameMechs
         int MAX_SPEED;  //  Max speed of game
         int MIN_SPEED;  //  Min speed of game
         int gamespeed;  //  Initiaul speed of game
-        objPos food;    //  Food object 
+        
+        objPosArrayList* foodItems;    //  List of food items 
 
     public:
         //  Default Constructor: 
@@ -70,7 +71,8 @@ class GameMechs
         
         //   Methods for food
         void generateFood(objPosArrayList* blockOff);
-        objPos getFoodPos() const;
+        bool checkFoodConsumption(objPosArrayList* playerPos);
+        objPosArrayList* getFoodItems() const;
 
 };
 #endif

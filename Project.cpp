@@ -59,6 +59,9 @@ void Initialize(void)
     //Seed rnadom number generation
     srand(time(NULL)); 
 
+    //  Generate initial food
+    myGM->generateFood(myPlayer->getPlayerPos());
+
 }
 
 
@@ -104,37 +107,48 @@ void DrawScreen(void)
     int boardY = myGM->getBoardSizeY();
     objPosArrayList* playerPos = myPlayer->getPlayerPos();
     int playerSize = playerPos->getSize();
-    objPos foodPos = myGM->getFoodPos();
+    objPosArrayList* foodItems = myGM->getFoodItems();
     
     //Draw game state
     for(int j = 0; j < boardY; j++) 
     {
         for(int i = 0; i < boardX; i++) 
         {
+            bool printed = false;
+
             //Draw borders
             if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
                 MacUILib_printf("%c", BOARDER_CHAR); //print boarder
             
             //Draw food
-            else if(i == foodPos.pos->x && j == foodPos.pos->y)
-                MacUILib_printf("%c", foodPos.symbol); 
-            
-            //Draw snake
             else
             {
-                bool printed = false;
-                for(int k = 0; k < playerSize; k++)
+                for(int k = 0; k < foodItems->getSize(); k++)
                 {
-                    objPos thisSeg = playerPos->getElement(k);
-
-                    if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                    objPos food = foodItems->getElement(k);
+                    if(food.pos->x == i && food.pos->y == j)
                     {
-                        MacUILib_printf("%c", thisSeg.symbol);
+                        MacUILib_printf("%c", food.symbol);  // Draw food
                         printed = true;
                         break;
                     }
-                }   
+                }
 
+                if(!printed)
+                {
+                    for(int k = 0; k < playerSize; k++)
+                    {
+                        objPos thisSeg = playerPos->getElement(k);
+
+                        if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                        {
+                            MacUILib_printf("%c", thisSeg.symbol);
+                            printed = true;
+                            break;
+                        }
+                    }   
+                }
+                
                 //Print a space if no other element matches
                 if(!printed)
                     MacUILib_printf("%c", ' ');

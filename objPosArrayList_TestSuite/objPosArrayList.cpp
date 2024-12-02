@@ -53,6 +53,7 @@ objPosArrayList &objPosArrayList::operator=(const objPosArrayList &l)
         arrayCapacity = l.arrayCapacity;
         aList = new objPos[arrayCapacity];
 
+        // deep copy
         for(int i = 0; i < listSize; i++)
         {
             aList[i] = l.aList[i];

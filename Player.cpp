@@ -103,7 +103,7 @@ void Player::movePlayer()
     objPos tempHead = currentHead;
 
     //  If collision with body, stop the game
-    if(collided)
+    if(checkSelfCollision())
     {
         myDir = STOP;
         mainGameMechsRef->setLoseFlag();    // Game over!
@@ -142,26 +142,41 @@ void Player::movePlayer()
         }
     }
 
-    //  Get current food position
-    objPos currentFood = mainGameMechsRef->getFoodPos();
-    
-    // Check if the head collides with food
-    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
+    //  Check food collision:
+    if(mainGameMechsRef->checkFoodConsumption(playerPosList))
     {
-        //  If food is eaten: increase score and grow snake
-        mainGameMechsRef->incrementScore();
-        playerPosList->insertHead(tempHead);    // add the new head pos to the snake
-        
-        //Generate a new food item at a random valid position
+        //  If food consumed, grow snake
+        playerPosList->insertHead(tempHead);
+
+        //  Also generate new food
         mainGameMechsRef->generateFood(playerPosList);
     }
-    else
-    {       
-        //  If no food eaten, move the snake as normal 
-            playerPosList->insertHead(tempHead);
-            // remove the tail (snake body moves forward)
-            playerPosList->removeTail();  
+    else    
+    {
+        //  If no food consumed, move snake as
+        playerPosList->insertHead(tempHead);
+        playerPosList->removeTail();  
     }
+    //  Get current food position
+    // objPosArrayList* currentFood = mainGameMechsRef->getFoodItems();
+    
+    // // Check if the head collides with food
+    // if(currentHead.pos->x == currentFood->getElement.pos->x && currentHead.pos->y == currentFood.pos->y)
+    // {
+    //     //  If food is eaten: increase score and grow snake
+    //     mainGameMechsRef->incrementScore();
+    //     playerPosList->insertHead(tempHead);    // add the new head pos to the snake
+        
+    //     //Generate a new food item at a random valid position
+    //     mainGameMechsRef->generateFood(playerPosList);
+    // }
+    // else
+    // {       
+    //     //  If no food eaten, move the snake as normal 
+    //         playerPosList->insertHead(tempHead);
+    //         // remove the tail (snake body moves forward)
+    //         playerPosList->removeTail();  
+    // }
 }
    
 

@@ -1,5 +1,7 @@
 #include "GameMechs.h"
 #include "MacUILib.h"
+#include "objPos.h"
+#include "objPosArrayList.h"
 #include <ctime> //for seeding rand()
 #include <cstdlib> //for rand()
 
@@ -19,7 +21,7 @@ GameMechs::GameMechs()
     MIN_SPEED = 1; 
     gamespeed = 3;
 
-    food.setObjPos(5,5,'o');
+    foodItems = new objPosArrayList();
 }
 
 
@@ -40,14 +42,15 @@ GameMechs::GameMechs(int boardX, int boardY)
     MIN_SPEED = 1; 
     gamespeed = 3;
 
-    food.setObjPos(5,5,'o');
+    foodItems = new objPosArrayList();
+
 }
 
 
 // Destructor:
 GameMechs::~GameMechs()
 {
-    // Destructor body is empty since there are no dynamically allocated members
+    delete foodItems;
 }
 
 
@@ -182,57 +185,87 @@ int GameMechs::decrease_speed()
 // Generate food at a random position
 void GameMechs::generateFood(objPosArrayList* blockOff)
 {
-    bool validFood = false;
-    int x_random, y_random;
-    char newFoodSym;
+    //  Generate up to 5 food items
+    if(foodItems->getSize() == 0)
+    {
+        while(foodItems->getSize() < 5)
+        {
+            // Generate random food position within game board
+            int x_random = (rand() % (boardSizeX - 2)) + 1; 
+            int y_random = (rand() % (boardSizeY - 2)) + 1;
+            char newFoodSym = '\0';
 
-    // Easy access to board size
-    int xRange = getBoardSizeX();
-    int yRange = getBoardSizeY();
-    
-    do{
-        // Generate random food position
-        x_random = (rand() % (xRange-2)) + 1; 
-        y_random = (rand() % (yRange-2)) + 1;
-        
-        //Generate random food symbol: (Three options types: num, a, A) 
-        int ascii_range = rand() % 3;
+            // Generate random food symbol
+            int ascii_range = rand() % 3;
+            //  Number:
+            if (ascii_range == 0)
+                newFoodSym = '0' + rand() % 10; 
+            //  Lower case letter:
+            else if (ascii_range == 1)
+                newFoodSym = 'a' + rand() % 26; 
+            //  Upper case letter:
+            else 
+                newFoodSym = 'A' + rand() % 26; 
+            
+            //  Pass by value 
+            objPos newFood(x_random, y_random, newFoodSym);
 
-        //  Number:
-        if (ascii_range == 0)
-            newFoodSym = '0' + rand() % 10; 
-        //  Lower case letter:
-        else if (ascii_range == 1)
-           newFoodSym = 'a' + rand() % 26; 
-        //  Upper case letter:
-        else
-            newFoodSym = 'A' + rand() % 26; 
-        
-        validFood = true;   // Assume the random food position is valid
+            bool validFood = true;
+            for(int i = 0; i < blockOff->getSize(); i++)
+            {   
+                objPos body = blockOff->getElement(i);
+                if (newFood.pos->x == body.pos->x && newFood.pos->y == body.pos->y)
+                {
+                    validFood = false;  // Random food is invalid, it overlaps with snake
+                    break;
+                }
+            }
 
-
-        // Check if the new food position overlaps with any part of the snake
-        for(int i = 0; i < blockOff->getSize(); i++)
-        {   
-            objPos body = blockOff->getElement(i);
-            if (x_random == body.pos->x && y_random == body.pos->y)
+            if(validFood)
             {
-                validFood = false;  // Random food is invalid, it overlaps with snake
-                break;
+                foodItems->insertTail(newFood);     //  Add valid food to the list
             }
         }
-    }while(!validFood);    // Continue generating food, until a valid food position is made
+    }
+}
 
-    // Set the valid food position and symbol
-    food.pos->x = x_random;
-    food.pos->y = y_random;
-    food.symbol = newFoodSym;
+bool GameMechs::checkFoodConsumption(objPosArrayList* playerPos)
+{
+    objPos head = playerPos->getHeadElement();
+    bool snakeAte = false;
 
+    for(int i = 0; i < foodItems->getSize(); i++)
+    {
+        objPos food = foodItems->getElement(i);
+
+        if(head.pos->x == food.pos->x && head.pos->y == food.pos->y)
+        {
+            if(isdigit(food.symbol))        // Special food effect
+            {
+                increment_speed();
+            }
+            else if(isupper(food.symbol))   // Special food effect
+            {
+                score += 10;
+            }
+            else
+            {
+                incrementScore();
+            }
+
+            foodItems->removeElement(i);       // Remove the consumed food
+            snakeAte = true;                   // Food was consumed   
+            break;                              //  Only one food consumed at a time     
+
+        }
+    }
+
+    return snakeAte;                         
 }
 
 
 // Return the current food position
-objPos GameMechs::getFoodPos() const
+objPosArrayList* GameMechs::getFoodItems() const
 {
-    return food;
+    return foodItems;
 }

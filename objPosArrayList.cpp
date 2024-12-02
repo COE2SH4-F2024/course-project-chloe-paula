@@ -137,6 +137,20 @@ void objPosArrayList::removeTail()
 }
 
 
+//  Removes an item in a list at the index
+void objPosArrayList::removeElement(int index)
+{
+    //  Check if valid index
+    if(index < 0 || index >= listSize)  return;
+
+    //  Shift all elements to the left one position, after the index 
+    for(int i = index; i < listSize - 1; i++)
+        aList[i] = aList[i+1];
+
+    listSize--;
+}
+
+
 // Prints the list for debugging purposes
 void objPosArrayList::printList() 
 {
