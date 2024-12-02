@@ -1,162 +1,154 @@
-
-
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
 #include "objPosArrayList.h"
-#include <iostream>
+#include "MacUILib.h"
 using namespace std;
-// Check lecture contents on general purpose array list construction, 
-// and modify it to support objPos array list construction.
 
+//  Constructor:
+//  Initializes array list
 objPosArrayList::objPosArrayList()
 {
-    //number of valid list elements in the list
-    listSize = 0;
-    //number of array elements allocated in heap array
-    arrayCapacity = ARRAY_MAX_CAP; //200
-    //Allocate objPos array - 200-element on heap
-    aList = new objPos[arrayCapacity];
-   
-    
-    // for(int i=0; i<ARRAY_MAX_CAP;i++){
-    //      (aList+i)->symbol = '0';
-    // }
-
-
+    listSize = 0;                       //  Empty list at start
+    arrayCapacity = ARRAY_MAX_CAP;
+    aList = new objPos[arrayCapacity];  //  Dynamically allocate memory for the list
 }
 
 
-//copy constructor: added this based on what we think is missing
-objPosArrayList::objPosArrayList(const objPosArrayList &l)
-{
-    //deep copy!
-    listSize = l.listSize;
-    arrayCapacity = l.arrayCapacity;
-    aList = new objPos[arrayCapacity];
-    for(int i = 0; i < listSize; i++){
-        aList[i] = l.aList[i];
-    }
-        
-}
-
-//destructor:
+//  Destructor:
+//  Frees dynamically allocated memory for the list
 objPosArrayList::~objPosArrayList()
 {
     delete[] aList;
-    aList = nullptr;
+    aList = nullptr;    //  Prevents dangling pointer
 }
 
-//copy assignment operator
+
+//  Copy Constructor: 
+//  Deep copy of another objPosArrayList
+objPosArrayList::objPosArrayList(const objPosArrayList &l)
+{
+    listSize = l.listSize;
+    arrayCapacity = l.arrayCapacity;
+    aList = new objPos[arrayCapacity];  // Allocate new memory for l-list
+    for(int i = 0; i < listSize; i++)
+        aList[i] = l.aList[i];          // deep copy each objPos element        
+}
+
+
+//  Copy Assignment Operator:
+//  Assigns a new list to an existing list (deep copy)
 objPosArrayList &objPosArrayList::operator=(const objPosArrayList &l)
 {
-    if(this != &l)
+    if(this != &l)                          // Checks for self-assignment
     {
-        delete[] aList;
+        delete[] aList;                     //   Ensures to free up exisitng array memory before deep copy
         
         listSize = l.listSize;
         arrayCapacity = l.arrayCapacity;
-        aList = new objPos[arrayCapacity];
+        aList = new objPos[arrayCapacity];  //  Allocate new memory for the list
 
         for(int i = 0; i < listSize; i++)
-        {
-            aList[i] = l.aList[i];
-        }
+            aList[i] = l.aList[i];          //  Deep copy each objPos element
     }
 
     return *this;
 }
 
+
+//  Return the size (num of elements) of list
 int objPosArrayList::getSize() const
 {
     return listSize;
 }
 
-void objPosArrayList::insertHead(objPos thisPos)
-{
-    // data 3 5 7 
-    // index 0 1 2
-    //size: 3
 
-    //ex. insert 9 to head
-    //shuffle from tail to head until i = 1
-    
-    if(listSize >= arrayCapacity){
-        return;
-    } 
-    
-    for(int i = listSize; i > 0; i--){
-        aList[i] = aList[i - 1]; //shifts elements down
-    }
-    aList[0] = thisPos;
-    listSize++;
-    
-
-    
-   // return;
-
-}
-//easier of the two
-void objPosArrayList::insertTail(objPos thisPos)
-{
-    //shorter version: if(listSize == arrayCapacity) return; //"sanity check"
-    if(listSize == arrayCapacity){
-        std::cout << " array full" << std::endl;
-        return;
-    }
-    aList[listSize++] = thisPos;
-}
-
-void objPosArrayList::removeHead()
-{
-    if(listSize == 0) return;
-
-    for(int i = 0; i < listSize - 1; i++)
-        aList[i] = aList[i+1];
-    listSize--;
-}
-
-void objPosArrayList::removeTail()
-{
-    //removing the last element
-    //Lazy deletion
-    // 2 5 7
-    // 0 1 2
-    //size: 2 (not 3 since we "deleted" last elem...for loop iterates up to listsize)
-    if(listSize > 0)
-        listSize--;
-}
-
+//  Return the first element of the list (head)
 objPos objPosArrayList::getHeadElement() const
 {
     return aList[0];   
 }
 
+
+//  Return the last element of the list (tail)
 objPos objPosArrayList::getTailElement() const
 {
     return aList[listSize - 1];
 }
 
+
+//  Return the element at the specific index
 objPos objPosArrayList::getElement(int index) const
 {
-    //check if index out of bound
-    if(index < 0 || index >= listSize){
-        index = 0;
-    } 
+    //  Check if index out of bound, true: returns the first element
+    if(index < 0 || index >= listSize)
+        index = 0;          // default to 0 if index invalid
 
     return aList[index];
 }
 
+
+//  Insert an element at the head (first element)
+void objPosArrayList::insertHead(objPos thisPos)
+{
+    //  Checks if the list is full, cannot add element if full
+    if(listSize >= arrayCapacity)
+        return;
+    
+    //  Shift all elements one position to the right
+    for(int i = listSize; i > 0; i--)
+        aList[i] = aList[i - 1]; 
+    
+    aList[0] = thisPos;     //  Insert the new element at the head
+    listSize++;             //  Increment list size by one
+
+}
+
+
+//  Insert an element at the tail (last element)
+void objPosArrayList::insertTail(objPos thisPos)
+{
+    //  Checks if the list is full, cannot add element if full
+    if(listSize >= arrayCapacity)
+        return;
+
+    //  Inser the element at the tail and increment size by one
+    aList[listSize++] = thisPos;  
+}
+
+
+// Removes the head (first) element of the list
+void objPosArrayList::removeHead()
+{
+    //  Checks if list is empty, cannot remove if empty
+    if(listSize == 0) return;
+
+    // Shift all elements to the left by one
+    for(int i = 0; i < listSize - 1; i++)
+        aList[i] = aList[i+1];
+    
+    //  Decrease the list size by one
+    listSize--;
+}
+
+
+// Removes the tail (last) element of the list
+void objPosArrayList::removeTail()
+{
+    if(listSize > 0)
+        listSize--;     //  Decrease the list size, removes the tail
+}
+
+
+// Prints the list for debugging purposes
 void objPosArrayList::printList() 
 {
-   if(listSize == 0) 
-   {
-    std::cout << "list empty!" << std::endl;
-    return;
-   }
+    // Check if list is empty
+    if(listSize == 0) 
+    {
+        MacUILib_printf("List is empty, nothing to print!");
+        return;
+    }
 
+    //  Print each element in the list
     for(int i = 0; i < listSize; i++)
-        cout<< aList[i].symbol << " ";
-        
-    std::cout << std::endl;
+        MacUILib_printf("%c", aList[i].symbol);
+        MacUILib_printf("\n");
 }

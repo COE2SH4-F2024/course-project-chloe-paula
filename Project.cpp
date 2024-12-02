@@ -1,29 +1,21 @@
-#include <iostream>
 #include "MacUILib.h"
-#include <ctime> //for seeding rand()
-#include <cstdlib> //for rand()
-
 #include "objPos.h"
 #include "GameMechs.h"
 #include "Player.h"
-// #include "Food.h"
+#include <ctime>    //For seeding random numbers
+#include <cstdlib>  //For random number generation
 
 using namespace std;
 
+//Constants
 #define DELAY_CONST 100000
 #define BOARDER_CHAR '#'
 
-//global pointer to Player class
-Player *myPlayer;
-//global pointer to GameMechs class
-GameMechs *myGM;
-//global pointer to Food class
-// Food *snakeFood;
+//Global Variables
+Player *myPlayer;       //Pointer to Player class
+GameMechs *myGM;        //Pointer to GameMechs class
 
-//first iteration ASCII list (food)
-// const int itemlistsize = 5;
-// objPos asciiList[itemlistsize];
-
+//Function Prototypes
 void Initialize(void);
 void GetInput(void);
 void RunLogic(void);
@@ -31,13 +23,13 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
-
+//Main Function
 int main(void)
 {
 
     Initialize();
 
-    //accessing exit flag in GameMechs
+    //Main game loop
     while(myGM->getExitFlagStatus() == false && myGM->getLoseFlagStatus() == false)  
     {
         GetInput();
@@ -51,108 +43,83 @@ int main(void)
 }
 
 
+// Funtion Definitions
+
+
+//Initialize game objects
 void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
 
-    //Allocate memory for global objects on the heap
+    //Allocate memory for global objects
     myGM = new GameMechs();
     myPlayer = new Player(myGM);
-    // snakeFood = new Food();
 
-    //initialize arbitrary ascii chars (ITERATION 0):
-    // asciiList[0].setObjPos(3, 6, 'A');
-    // asciiList[1].setObjPos(5, 5, 'B');
-    // asciiList[2].setObjPos(6, 8,'C');
-
-    srand(time(NULL)); //seed the random number generator
-
-    //Generate initial random snake food:
-    // snakeFood->generateFood(myPlayer->getPlayerPos());
+    //Seed rnadom number generation
+    srand(time(NULL)); 
 
 }
 
+
+//Get input from the player and exit commands
 void GetInput(void)
 {
     myGM->collectAsynInput();
     char input_char = myGM->getInput();
 
-    if(input_char != 0)
+    if(input_char != '\0')
     {
         myGM->setInput(input_char);
 
         switch(input_char) 
-        { //DECIDE IF EXIT GAME                  
-                case ' ': case 13 : case 27: 
-                //case space,escape,enter
+        {                   
+                // Space, Enter, or Escape: Exit game
+                case ' ': case 13 : case 27:
                     myGM->setExitTrue(); 
-                    //set to true = exit game
-                    break;
-
-                case 'f': case 'F':
-                    // snakeFood->generateFood(myPlayer->getPlayerPos());
-                    MacUILib_printf("debug: food regenerated\n");
-                    break;
-
-                case 'p': case 'P': //Debug: check if score increments
-                    myGM->incrementScore();
-                    MacUILib_printf("\nDebug: score incremented. Current score: %d\n", myGM->getScore());
-                    break;
-
-                case 'l': //Debug: force player to loose: set loseflag to true
-                    myGM->setLoseFlag();
-                    MacUILib_printf("Debug: loseflag set to true. Game Lost.\n");
                     break;
         }
     }
 }
 
+
+//Update game logic
 void RunLogic(void)
 {
     myPlayer->updatePlayerDir();
 
     if(!myGM->getLoseFlagStatus() && !myGM->getExitFlagStatus())
-    {
         myPlayer->movePlayer();
-    }
-    
-    //possibly place detect collision code for iteration 3:
+
 }
 
+
+//Create the game board and display the game state
 void DrawScreen(void)
 {
     MacUILib_clearScreen();    
 
-    //get board dimensions
+    //Get board dimensions and player/food positions
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
-    
-    //get player position and symbol
     objPosArrayList* playerPos = myPlayer->getPlayerPos();
     int playerSize = playerPos->getSize();
-    
     objPos foodPos = myGM->getFoodPos();
-
-    // int playerX = playerPos.pos->x;
-    // int playerY = playerPos.pos->y;
-    // char playerSymbol = playerPos.symbol; //was: playerPos.getSymbol();
-
-    // int foodListSize = snakeFood->getListSize();
     
-    //draw the board
+    //Draw game state
     for(int j = 0; j < boardY; j++) 
     {
         for(int i = 0; i < boardX; i++) 
         {
-            
+            //Draw borders
             if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
-                        //draws boarder
                 MacUILib_printf("%c", BOARDER_CHAR); //print boarder
-
-            else if(i == foodPos.pos->x && j == foodPos.pos->y)//print food
-              //print the ascii list if their coordinates match
+            
+            //Draw food
+            else if(i == foodPos.pos->x && j == foodPos.pos->y)
                 MacUILib_printf("%c", foodPos.symbol); 
+            
+            //Draw snake
             else
             {
                 bool printed = false;
@@ -160,11 +127,6 @@ void DrawScreen(void)
                 {
                     objPos thisSeg = playerPos->getElement(k);
 
-                    //iter 3: check if curr seg x,y, pos 
-                    //matches the i,j corrd
-                    //if yes print player
-                    // printed = false;
-                    
                     if(thisSeg.pos->x == i && thisSeg.pos->y == j)
                     {
                         MacUILib_printf("%c", thisSeg.symbol);
@@ -173,22 +135,28 @@ void DrawScreen(void)
                     }
                 }   
 
+                //Print a space if no other element matches
                 if(!printed)
                     MacUILib_printf("%c", ' ');
             }
         } 
         MacUILib_printf("\n"); //move to next row with new line
     } 
+
+    // Display game information
     MacUILib_printf("Score: %d",myGM->getScore());
     MacUILib_printf("\nPress + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
     MacUILib_printf("To EXIT GAME: press ESCAPE, ENTER or SPACE button");
 }
     
+
+// Control game speed (delay between iterations)
 void LoopDelay(void)
 {
     // Change the delaying constant to vary the movement speed.
     int delayspeed;
 
+    // Adjust delay based on current game speed
     switch(myGM->getCurrentSpeed())
     {
         case 1: //slowest
@@ -197,8 +165,8 @@ void LoopDelay(void)
         case 2: 
             delayspeed = 300000;
             break;
-        case 3: // default
-            delayspeed = DELAY_CONST; 
+        case 3: 
+            delayspeed = DELAY_CONST;  //default speed
             break;
         case 4: 
             delayspeed = 60000;
@@ -211,26 +179,21 @@ void LoopDelay(void)
 }
 
 
+// CLean up allocated memory and display end-game messages
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
 
-    //Display messages depending on end-game status
+    // Display end-game status
     if(myGM->getLoseFlagStatus())
         MacUILib_printf("Game Over: You lost the game!\n");
     else if(myGM->getExitFlagStatus())
         MacUILib_printf("Game Over: You exited the game!\n");
 
-    //delete heap memory
+    // Free allocated memory
     delete myPlayer;
     delete myGM;
-    // delete snakeFood;
-
-    // for(int k = 0; k < itemlistsize; k++)
-    //     delete asciiList[k].pos;
 
     MacUILib_uninit();
+
 }
-
-
-//this is a test

@@ -1,40 +1,57 @@
 #ifndef OBJPOS_ARRAYLIST_H
 #define OBJPOS_ARRAYLIST_H
 
-#define ARRAY_MAX_CAP 200
-
 #include "objPos.h"
 #include <iostream>
 
+#define ARRAY_MAX_CAP 200   // Max capacity of array list
 
+/*
+
+This class a dynamic array-based list to manage a collection of 'objPos' objects
+    objPos objects: 
+        x,y-coordinate
+        symbol
+
+The class allows list operations:
+    - Inserting elements at the head or tail of the list.
+    - Removing elements from the head or tail.
+    - Accessing head, tail and elements by index
+    - Checking the current size of the list
+    - Printing elements for debugging
+
+*/
 class objPosArrayList
 {
     private:
-        objPos* aList;
-        int listSize;
-        int arrayCapacity;
+        objPos* aList;          //  Array to hold the elements (objPos objects)
+        int listSize;           // Number of elements currently in the list
+        int arrayCapacity;      // Maximum capacity of the list (fixed size)
 
     public:
-        objPosArrayList();
-        ~objPosArrayList();
-        //need copy constructor???
+
+        // Constructor and Destructor
+        objPosArrayList();      //  Initializes the list
+        ~objPosArrayList();     // Frees dynamically allocated memory
+
+        // Copy constructor and assignment operator for deep copying
         objPosArrayList(const objPosArrayList &l);
-        //copy assignment constructor
         objPosArrayList& operator=(const objPosArrayList &l);
 
-        int getSize() const;
-        void insertHead(objPos thisPos);
-        void insertTail(objPos thisPos);
-        void removeHead();
-        void removeTail();
-        
-        //getter
-        objPos getHeadElement() const;
-        objPos getTailElement() const;
-        objPos getElement(int index) const;
+        // Getter functions
+        int getSize() const;                // Returns number of elements in the list    
+        objPos getHeadElement() const;      // Returns Head element (first item)
+        objPos getTailElement() const;      // Returns Tail element (last item)
+        objPos getElement(int index) const; // Returns element at a specific index
 
-        //add for visual check
-        void printList();
+        // Setter and Deletion functions
+        void insertHead(objPos thisPos);    // Sets Head element (first item)
+        void insertTail(objPos thisPos);    // Sets Tail element (last item)
+        void removeHead();                  // Removes Head element
+        void removeTail();                  // Removes Tail element
+        
+        //  For visual debugging
+        void printList();   //prints the list for debugging purposes
 };
 
 #endif

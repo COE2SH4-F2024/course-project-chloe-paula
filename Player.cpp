@@ -1,234 +1,186 @@
 #include "Player.h"
 #include "MacUILib.h"
 
+//  Constructor for the Player class
+//  Initializes the player's position and direction.
+//  Reference to the main GameMechs object.
 Player::Player(GameMechs* thisGMRef)
 {
+    // Set reference to the GameMechs instance
     mainGameMechsRef = thisGMRef;
+
+    //Initialize the player position list
     playerPosList = new objPosArrayList();
+
+    // Set initial direction (not moving)
     myDir = STOP;
 
+    // Create the initial head position at the center of the board
     objPos headPos(thisGMRef->getBoardSizeX()/2,
-                    thisGMRef->getBoardSizeY()/2,
-                    '@'
-                );
+                   thisGMRef->getBoardSizeY()/2,
+                   '@');    //snake head
+    
+    //  Insert head into the player's position list
     playerPosList->insertHead(headPos);
     
-    
- 
-    // more actions to be included... initialize player details
-    // currentHead.pos->x = mainGameMechsRef->getBoardSizeX()/2; //player pos in middle
-    // currentHead.pos->y = mainGameMechsRef->getBoardSizeY()/2; //player pos in middle
-    // currentHead.symbol = '*'; //player symbol
 }
 
 
+//  Destructor for the Player class
+// Deletes the dynamically allocated objPosArrayList.
 Player::~Player()
 {
-    // delete any heap members here
     delete playerPosList;
 }
 
+
+//  Returns the reference to the player's position list (snake body).
+//  A pointer to the player’s position list.
 objPosArrayList* Player::getPlayerPos() const
 {
-    // return the reference to the currentHead arrray list
     return playerPosList;
 }
 
+
+//  Updates the direction of the player based on input.
+//  Prevents the player from reversing direction 
 void Player::updatePlayerDir()
 {
+    // Get input from the game mechanics
     char input = mainGameMechsRef->getInput(); 
 
-    // PPA2/3 input processing logic for direction!!   
-     //note change direction = myDir
-     if(input != 0) 
+    if(input != 0) // Ensure the input is valid
     {
         switch(input)
         {                      
-            case 'w': case 'W':
+            case 'w': case 'W': // Move up
                 if(myDir != DOWN) 
                     myDir = UP;
                 break;
-            case 's': case 'S':
+            case 's': case 'S': // Move down
                 if (myDir != UP)
                     myDir = DOWN;
                 break;
-            case 'a': case 'A': 
+            case 'a': case 'A': // Move left
                 if (myDir != RIGHT)
                     myDir = LEFT;
                 break;
-            case 'd' : case 'D':
+            case 'd' : case 'D': // Move right
                 if (myDir != LEFT)
                     myDir = RIGHT;
                 break;
-            case '+': //increment speed
+            case '+': // Increase speed
                 if(mainGameMechsRef->getCurrentSpeed() < mainGameMechsRef->getMaxSpeed())
                     mainGameMechsRef->increment_speed();
                 break;
-            case '-': //lower speed
+            case '-': // Decrease speed
                 if(mainGameMechsRef->getCurrentSpeed() > mainGameMechsRef->getMinSpeed())
                     mainGameMechsRef->decrease_speed();
                 break;
             default:
                 break;
         }
-        mainGameMechsRef->clearInput();
+        mainGameMechsRef->clearInput(); // Clear input to prevent repeating actions
     }
 }
 
+
+//  Moves the player (snake) one step based on the current direction
+//  Handles collisions with the body and food
+//  Stops the game if the snake collides with itself
 void Player::movePlayer()
 {
-    //updatePlayerDir();    
-    // PPA3 Finite State Machine logic
-    //switch cases logic... switch according to direction 
 
-    //easy access to board dimensions:
+    //  Easy access to board dimensions:
     int board_H = mainGameMechsRef->getBoardSizeY();
     int board_W = mainGameMechsRef->getBoardSizeX();
+    
+    //  Check for collisions with the snake’s own body
     bool collided = checkSelfCollision();
 
-    //Iteration 3:
-    //  create temp objPos to calculate the new head position
-    //      probably should get the head elements of the playerPosList
-    //      as a good starting point.
-
+    //  Create a temporary object for the new head position
     objPos currentHead = playerPosList->getHeadElement();
     objPos tempHead = currentHead;
 
-    if(collided){
+    //  If collision with body, stop the game
+    if(collided)
+    {
         myDir = STOP;
-        mainGameMechsRef->setLoseFlag();
+        mainGameMechsRef->setLoseFlag();    // Game over!
         return;
-
     }
-    if(myDir!=STOP){
-    
+
+    // If no collision and the player is moving, update the head position
+    if(myDir!=STOP)
+    {
         switch(myDir)
         {
-            //iteration 3:
-                //calculatte new position of the head,
-                //using the temp objPos
             case UP:
                 if(currentHead.pos->y > 1)
-                    tempHead.pos->y--; 
+                    tempHead.pos->y--;  // Move up
                 else
-                    //if reached the upper boarder limit -- wraps around to row 9
-                    tempHead.pos->y = board_H - 2; 
-                break;
+                    tempHead.pos->y = board_H - 2; // Wrap around to bottom
+                break;  
             case DOWN:
                 if(currentHead.pos->y < board_H - 2)
-                    //move within bounds
-                    tempHead.pos->y++; 
+                    tempHead.pos->y++;  // Move down
                 else
-                    tempHead.pos->y = 1; //reset to limit
+                    tempHead.pos->y = 1; // Wrap around to top
                 break;
             case LEFT:
                 if(currentHead.pos->x > 1)
-                    tempHead.pos->x--;
-                else //if reached limit -- wrap around
-                    tempHead.pos->x = board_W - 2;
+                    tempHead.pos->x--;  // Move left
+                else 
+                    tempHead.pos->x = board_W - 2; // Wrap around to right
                 break;
             case RIGHT:
                 if(currentHead.pos->x < board_W -2)
-                    //move within bounds
-                    tempHead.pos->x++;
+                    tempHead.pos->x++;  // Move right
                 else
-                    tempHead.pos->x = 1;
+                    tempHead.pos->x = 1; // Wrap around to left
                 break;
         }
-         //most recent food position + symbol
-        objPos currentFood = mainGameMechsRef->getFoodPos();
-        // objPosArrayList* currentPlayer = playerPosList();
-        // switch(myDir){
-        //     case UP:
-        //         if(playerPosList->getElement((tempHead.getObjPos().pos->x)-1).getSymbol()=='@'){
-        //             collided = true;
-        //         }
-        //     case DOWN:
-        //         if(playerPosList->getElement((tempHead.getObjPos().pos->x)+1).getSymbol()=='@'){
-        //             collided = true;
-        //         }
-        //     case LEFT:
-        //         if(playerPosList->getElement((tempHead.getObjPos().pos->y)-1).getSymbol()=='@'){
-        //             collided = true;
-        //         }
-        //     case RIGHT:
-        //         if(playerPosList->getElement((tempHead.getObjPos().pos->y)+1).getSymbol()=='@'){
-        //             collided = true;
-        //         }
-        // }
+    }
 
-        if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
-        {
-            //Increment score on collision:
-            mainGameMechsRef->incrementScore();
+    //  Get current food position
+    objPos currentFood = mainGameMechsRef->getFoodPos();
+    
+    // Check if the head collides with food
+    if(currentHead.pos->x == currentFood.pos->x && currentHead.pos->y == currentFood.pos->y)
+    {
+        //  If food is eaten: increase score and grow snake
+        mainGameMechsRef->incrementScore();
+        playerPosList->insertHead(tempHead);    // add the new head pos to the snake
+        
+        //Generate a new food item at a random valid position
+        mainGameMechsRef->generateFood(playerPosList);
+    }
+    else
+    {       
+        //  If no food eaten, move the snake as normal 
             playerPosList->insertHead(tempHead);
-            //Generate a new food item at a rand valid position:
-            mainGameMechsRef->generateFood(playerPosList);
-
-            // MacUILib_printf("Food eaten! New food generated. Current score: %d\n", mainGameMechsRef->getScore());
-
-        }
-        else
-        {       
-                
-                playerPosList->insertHead(tempHead);
-                playerPosList->removeTail();  
-                
-
-        }
-    } 
+            // remove the tail (snake body moves forward)
+            playerPosList->removeTail();  
+    }
 }
    
-    //Iter 3: insert temp objPos to the head of the list
-    
-    //Iter 3 later feature 2: 
-            //check if the new temp objPos overlaps 
-            //the new food position (get it from the GameMechs class)
 
-            //use isPosEqual() method from objPos class
-
-            //If overlapped, that means food consumed, DO NOT REMOVE SNAKE TAIL
-            //and take the respective actions to increase score
-
-            //if NOT overlapped, remove tail and complete movement
-  
-
-
-// More methods to be added
-bool Player::checkSelfCollision(){
-    objPos head = playerPosList->getHeadElement();
+//  Checks if the snake’s head collides with its body.
+//  True if there is a collision with the body; false otherwise.
+bool Player::checkSelfCollision()
+{
+    objPos head = playerPosList->getHeadElement();  // Get head element of snake
     objPos body;
     bool collide = false;
-    //objPos tempHead = playerPosList->getHeadElement();
 
-    for(int i = 1; i < playerPosList->getSize();i++){
-        body = playerPosList->getElement(i);
-    // if(myDir!=STOP){
-    //     switch(myDir){
-    //         case UP:
-    //             if(playerPosList->getElement((tempHead.getObjPos().pos->x)-1).getSymbol()=='@'){
-    //                 collide = true;
-    //                 break;
-    //             }
-    //         case DOWN:
-    //             if(playerPosList->getElement((tempHead.getObjPos().pos->x)+1).getSymbol()=='@'){
-    //                 collide = true;
-    //                 break;
-    //             }
-    //         case LEFT:
-    //             if(playerPosList->getElement((tempHead.getObjPos().pos->y)-1).getSymbol()=='@'){
-    //                 collide = true;
-    //                 break;
-    //             }
-    //         case RIGHT:
-    //             if(playerPosList->getElement((tempHead.getObjPos().pos->y)+1).getSymbol()=='@'){
-    //                 collide = true;
-    //                 break;
-    //             }
-    //     }
-    // }
-        if(head.pos->x == body.pos->x && head.pos->y == body.pos->y){
-            collide = true;
+    //  Iterate through the snake's body
+    //  Check if any part of the body collides with the head
+    for(int i = 1; i < playerPosList->getSize();i++)
+    {
+        body = playerPosList->getElement(i);    // get each part of body
+        if(head.pos->x == body.pos->x && head.pos->y == body.pos->y)
+        {
+            collide = true; // collision detected
             break;
         }
     }

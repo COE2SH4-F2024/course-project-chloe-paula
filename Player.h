@@ -1,39 +1,57 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "GameMechs.h"
-#include "objPos.h"
-#include "objPosArrayList.h"
+#include "GameMechs.h"          // For main game mechanics
+#include "objPos.h"             // For handling individual snake positions
+#include "objPosArrayList.h"    // For handling snake body positions (list)
+
+/*
+
+This class manages the player's snake: 
+        movement, 
+        direction updates,
+        collision detection
+
+
+*/
 
 class Player
 {
-    // Construct the remaining declaration from the project manual.
-
-    // Only some sample members are included here
-
-    // You will include more data members and member functions to complete your design.
-
-    
     public:
-        enum Dir {UP, DOWN, LEFT, RIGHT, STOP};  // This is the direction state
+        // Possible movement directions for snake
+        enum Dir {UP, DOWN, LEFT, RIGHT, STOP};
 
+        // Constructs a Player object
+        // thisGMRef: reference to GameMechs instance
         Player(GameMechs* thisGMRef);
+
+        // Destructor
         ~Player();
 
-        objPosArrayList* getPlayerPos() const; // Upgrade this in iteration 3.       
+        // Gets the player's current position list
+        // A pointer to the objPosArrayList, which contains the snake's positions
+        objPosArrayList* getPlayerPos() const;    
+
+        //  Updates the player's movement direction based on input
         void updatePlayerDir();
+
+        // Moves the player based on the current direction.
+        // Handles collisions with food and itself.
         void movePlayer();
 
-        // More methods to be added here
+        // Checks if the snake's head collides with its body
         bool checkSelfCollision();
 
     private:
-        //objPos playerPos; // Upgrade this in iteration 3.       
-        objPosArrayList* playerPosList; //it 3
+        // Dynamic list representing the snake's body
+        objPosArrayList* playerPosList; 
+
+        // Current movement direction of the snake
         enum Dir myDir;
 
-        // Need a reference to the Main Game Mechanisms
+        // Reference to the GameMechs object
         GameMechs* mainGameMechsRef;
+        
 };
 
 #endif

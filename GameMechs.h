@@ -6,69 +6,71 @@
 
 using namespace std;
 
-//file holds GameMechs
+/**
+    This class controls the game mechanics for the snake game:
+        - input handling,
+        - score tracking
+        - speed control
+        - food generation
+ */
 
 class GameMechs
 {
     private:
-        char input; //holds the most recent input collected via MacUILib_getChar()
-        bool exitFlag;
-        bool loseFlag; //recording if the player has lost
-        //shouldn't be set to true if the player presses the exit key to end game
-        //use this flag to determine what messages to display at the end of the game
-        int score; //holds current score of player
-        int boardSizeX;
-        int boardSizeY;
-        int MAX_SPEED;
-        int MIN_SPEED;
-        int gamespeed;
-
-        objPos food; //easier path
+        char input;     //  Holds most recent input collected from user
+        bool exitFlag;  //  Indicates if game is over
+        bool loseFlag;  //  Indicates if player lost, game over
+        int score;      //  Holds current score of player
+        int boardSizeX; //  Width of board
+        int boardSizeY; //  Height of board
+        int MAX_SPEED;  //  Max speed of game
+        int MIN_SPEED;  //  Min speed of game
+        int gamespeed;  //  Initiaul speed of game
+        objPos food;    //  Food object 
 
     public:
-        //initialize game mechanic-related parameters
+        //  Default Constructor: 
+        //      initializes game mechanic-related parameters
         GameMechs();
+
+        //  Constructor with custom board sizes
         GameMechs(int boardX, int boardY);
-        // is this one needed at all? Do we have heap members?
+
+        // Destructor
         ~GameMechs(); 
 
+        //  Getter Methods for Game State
         bool getExitFlagStatus() const;
-        void setExitTrue();
         bool getLoseFlagStatus() const;
+
+        //  Setter Methods for Game State
+        void setExitTrue();
         void setLoseFlag();
 
-        //clear most recent collected ASCII input from the field
-        //use this to make sure no input is double-processed
+        //   Methods for managing player input
+        void collectAsynInput();
         char getInput() const;
         void setInput(char this_input);
         void clearInput();
 
+        //   Getter Methods for board size
         int getBoardSizeX() const;
         int getBoardSizeY() const;
         
+        //   Methods for managing score
         int getScore();
-
-        //setter for the score field
-        //assumption is that the score can only be 
-        //increased by 1 at a time per food item collected
-        //... maybe change this method later on to increase
-       //score by more than 1?
         void incrementScore();
         
-        // More methods should be added here
-        void collectAsynInput();
-
+        //   Methods for managing speed
         int getMaxSpeed() const;
         int getMinSpeed() const;
         int getCurrentSpeed();
         int increment_speed();
         int decrease_speed();
         
+        //   Methods for food
         void generateFood(objPosArrayList* blockOff);
         objPos getFoodPos() const;
-
-
-
 
 };
 #endif
