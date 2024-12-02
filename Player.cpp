@@ -177,7 +177,7 @@ void Player::movePlayer()
 
         }
     } 
-
+}
    
     //Iter 3: insert temp objPos to the head of the list
     

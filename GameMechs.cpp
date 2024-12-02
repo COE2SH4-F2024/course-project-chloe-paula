@@ -174,20 +174,18 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
         for(int i = 0; i < blockOff->getSize(); i++)//go thru all elements of snake
         {   
             //see if the new food gen is same pos as snake elements
-            if (x_random == blockOff->getElement(i).pos->x && y_random == blockOff->getElement(i).pos->y) //&& food.symbol == blockOff->getElement(i).symbol
+            objPos body = blockOff->getElement(i);
+            if (x_random == body.pos->x && y_random == body.pos->y) //&& food.symbol == blockOff->getElement(i).symbol
             {
                 validFood = false;  //if is same...then its false.. try again
                 break;
             }
         }
-
-        if(validFood){
-            food.pos->x = x_random;
-            food.pos->y = y_random;
-            food.symbol = newFoodSym;
-        }
-
     }while(!validFood);
+
+    food.pos->x = x_random;
+    food.pos->y = y_random;
+    food.symbol = newFoodSym;
 
 }
 

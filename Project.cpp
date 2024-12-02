@@ -111,8 +111,12 @@ void GetInput(void)
 void RunLogic(void)
 {
     myPlayer->updatePlayerDir();
-    myPlayer->movePlayer();
 
+    if(!myGM->getLoseFlagStatus() && !myGM->getExitFlagStatus())
+    {
+        myPlayer->movePlayer();
+    }
+    
     //possibly place detect collision code for iteration 3:
 }
 
@@ -120,9 +124,6 @@ void DrawScreen(void)
 {
     MacUILib_clearScreen();    
 
-    //copy from ppa2, change the variable names accordingly
-    int i, j, k;
-    // int asciiflag;
     //get board dimensions
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
@@ -140,59 +141,40 @@ void DrawScreen(void)
     // int foodListSize = snakeFood->getListSize();
     
     //draw the board
-    for(j = 0; j < boardY; j++) 
+    for(int j = 0; j < boardY; j++) 
     {
-        for(i = 0; i < boardX; i++) 
+        for(int i = 0; i < boardX; i++) 
         {
-            bool printed = false;
             
-            for(int k = 0; k < playerSize; k++)
-            {
-                objPos thisSeg = playerPos->getElement(k);
+            if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
+                        //draws boarder
+                MacUILib_printf("%c", BOARDER_CHAR); //print boarder
 
-                //iter 3: check if curr seg x,y, pos 
-                //matches the i,j corrd
-                //if yes print player
-                // printed = false;
-                
-                if(thisSeg.pos->x == i && thisSeg.pos->y == j)
-                {
-                    MacUILib_printf("%c", thisSeg.symbol);
-                    printed = true;
-                }
-                //watch out!
-                //we need to skip the if-else block below
-                //if we have printed something in the for loop
-            }    
-            //at the end of the for loop, do something to determine
-            //whether to conitnue with the if-else of 
-            //or to move on to the next iteration of  i,j
-            // asciiflag = false;
-            if(!printed)
+            else if(i == foodPos.pos->x && j == foodPos.pos->y)//print food
+              //print the ascii list if their coordinates match
+                MacUILib_printf("%c", foodPos.symbol); 
+            else
             {
-                if(i == 0 || i == boardX - 1 || j == 0 || j == boardY - 1)
-                            //draws boarder
-                    MacUILib_printf("%c", BOARDER_CHAR); //print boarder
-                        // else if(i == playerX && j == playerY)
-                        //     //draws player @
-                        //     MacUILib_printf("%c", playerSymbol);
-                else if(i == foodPos.pos->x && j == foodPos.pos->y)//print food
-                {   //print the ascii list if their coordinates match
-                            // bool foodDrawn = false;
-                            
-                            // // for(k = 0; k < foodListSize; k++)
-                            // // {
-                            // //     if(snakeFood->getFoodPos(k).pos->x == i && snakeFood->getFoodPos(k).pos->y == j)
-                            // //     {
-                            // //         MacUILib_printf("%c", snakeFood->getFoodPos(k).symbol);
-                            // //         // asciiflag = true;
-                            //         foodDrawn = true;
-                            //         break;
-                            
-                    MacUILib_printf("%c", foodPos.symbol);                
-                }
-                else if(i<boardX&&j<boardY)
-                    MacUILib_printf("%c", ' '); //space if no ASCII item
+                bool printed = false;
+                for(int k = 0; k < playerSize; k++)
+                {
+                    objPos thisSeg = playerPos->getElement(k);
+
+                    //iter 3: check if curr seg x,y, pos 
+                    //matches the i,j corrd
+                    //if yes print player
+                    // printed = false;
+                    
+                    if(thisSeg.pos->x == i && thisSeg.pos->y == j)
+                    {
+                        MacUILib_printf("%c", thisSeg.symbol);
+                        printed = true;
+                        break;
+                    }
+                }   
+
+                if(!printed)
+                    MacUILib_printf("%c", ' ');
             }
         } 
         MacUILib_printf("\n"); //move to next row with new line
