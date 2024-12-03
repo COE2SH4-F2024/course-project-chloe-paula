@@ -110,7 +110,7 @@ void DrawScreen(void)
     MacUILib_printf("Don't run into your own snake!\n");
     MacUILib_printf("\n1. Use AWDS keys to move snake\n");
     MacUILib_printf("2. Eat UPPER CASE letters\n");
-    MacUILib_printf("    +10 EXTRA POINTS \n\n");
+    MacUILib_printf("    +10 EXTRA POINTS \n");
     MacUILib_printf("3. Eat NUMBERS:\n");
     MacUILib_printf("    +0 POINTS & SHORTER TAIL:\n");
     MacUILib_printf("4. EXIT GAME:\n");
