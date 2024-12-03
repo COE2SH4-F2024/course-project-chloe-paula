@@ -6,9 +6,9 @@ using namespace std;
 //  Initializes array list
 objPosArrayList::objPosArrayList()
 {
-    listSize = 0;                       //  Empty list at start
+    listSize = 0;                           //  Empty list at start
     arrayCapacity = ARRAY_MAX_CAP;
-    aList = new objPos[arrayCapacity];  //  Dynamically allocate memory for the list
+    aList = new objPos[arrayCapacity];      //  Dynamically allocate memory for the list
 }
 
 
@@ -27,9 +27,9 @@ objPosArrayList::objPosArrayList(const objPosArrayList &l)
 {
     listSize = l.listSize;
     arrayCapacity = l.arrayCapacity;
-    aList = new objPos[arrayCapacity];  // Allocate new memory for l-list
+    aList = new objPos[arrayCapacity];      // Allocate new memory for l-list
     for(int i = 0; i < listSize; i++)
-        aList[i] = l.aList[i];          // deep copy each objPos element        
+        aList[i] = l.aList[i];              // deep copy each objPos element        
 }
 
 
@@ -165,4 +165,11 @@ void objPosArrayList::printList()
     for(int i = 0; i < listSize; i++)
         MacUILib_printf("%c", aList[i].symbol);
         MacUILib_printf("\n");
+}
+
+
+//  Empties listSize
+void objPosArrayList::clearList()
+{
+    listSize = 0;
 }

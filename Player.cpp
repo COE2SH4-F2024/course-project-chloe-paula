@@ -3,7 +3,6 @@
 
 //  Constructor for the Player class
 //  Initializes the player's position and direction.
-//  Reference to the main GameMechs object.
 Player::Player(GameMechs* thisGMRef)
 {
     // Set reference to the GameMechs instance
@@ -69,14 +68,6 @@ void Player::updatePlayerDir()
                 if (myDir != LEFT)
                     myDir = RIGHT;
                 break;
-            case '+': // Increase speed
-                if(mainGameMechsRef->getCurrentSpeed() < mainGameMechsRef->getMaxSpeed())
-                    mainGameMechsRef->increment_speed();
-                break;
-            case '-': // Decrease speed
-                if(mainGameMechsRef->getCurrentSpeed() > mainGameMechsRef->getMinSpeed())
-                    mainGameMechsRef->decrease_speed();
-                break;
             default:
                 break;
         }
@@ -85,120 +76,185 @@ void Player::updatePlayerDir()
 }
 
 
+//  Return the new position of the snake head depending on the direction of snake
+objPos Player::getNextHeadPos() const
+{
+    //  Easy access to board dimensions:
+    int board_H = mainGameMechsRef->getBoardSizeY();
+    int board_W = mainGameMechsRef->getBoardSizeX();
+    
+    //  Create a temporary object for the new head position
+    objPos currentHead = playerPosList->getHeadElement();
+    objPos tempHead = currentHead;
+
+    switch(myDir)
+    {
+        case UP:
+            if(currentHead.pos->y > 1)
+                tempHead.pos->y--;  // Move up
+            else
+                tempHead.pos->y = board_H - 2; // Wrap around to bottom
+            break;  
+        case DOWN:
+            if(currentHead.pos->y < board_H - 2)
+                tempHead.pos->y++;  // Move down
+            else
+                tempHead.pos->y = 1; // Wrap around to top
+            break;
+        case LEFT:
+            if(currentHead.pos->x > 1)
+                tempHead.pos->x--;  // Move left
+            else 
+                tempHead.pos->x = board_W - 2; // Wrap around to right
+            break;
+        case RIGHT:
+            if(currentHead.pos->x < board_W -2)
+                tempHead.pos->x++;  // Move right
+            else
+                tempHead.pos->x = 1; // Wrap around to left
+            break;
+    }
+
+    return tempHead;
+}
+
+
+
 //  Moves the player (snake) one step based on the current direction
 //  Handles collisions with the body and food
 //  Stops the game if the snake collides with itself
 void Player::movePlayer()
 {
-
-    //  Easy access to board dimensions:
-    int board_H = mainGameMechsRef->getBoardSizeY();
-    int board_W = mainGameMechsRef->getBoardSizeX();
-    
     //  Check for collisions with the snake’s own body
-    bool collided = checkSelfCollision();
-
-    //  Create a temporary object for the new head position
-    objPos currentHead = playerPosList->getHeadElement();
-    objPos tempHead = currentHead;
+    bool selfcollided = checkSelfCollision();
+    bool foodConsumed = checkFoodConsumption();
 
     //  If collision with body, stop the game
-    if(checkSelfCollision())
+    if(selfcollided)
     {
         myDir = STOP;
         mainGameMechsRef->setLoseFlag();    // Game over!
+        mainGameMechsRef->setExitTrue();
         return;
     }
+    //  Check if game won
+    else if(mainGameMechsRef->getWinGameStatus())
+    {
+        myDir = STOP;
+        mainGameMechsRef->setWinGameFlag();
+    }
 
-    // If no collision and the player is moving, update the head position
+    // If no collision and the player is moving,
+    // update the new head position AND
+    // check other conditions (i.e food and self collision)
     if(myDir!=STOP)
     {
-        switch(myDir)
+        objPos newHead = getNextHeadPos();
+        
+        //  Check food collision:
+        if(foodConsumed)
         {
-            case UP:
-                if(currentHead.pos->y > 1)
-                    tempHead.pos->y--;  // Move up
-                else
-                    tempHead.pos->y = board_H - 2; // Wrap around to bottom
-                break;  
-            case DOWN:
-                if(currentHead.pos->y < board_H - 2)
-                    tempHead.pos->y++;  // Move down
-                else
-                    tempHead.pos->y = 1; // Wrap around to top
-                break;
-            case LEFT:
-                if(currentHead.pos->x > 1)
-                    tempHead.pos->x--;  // Move left
-                else 
-                    tempHead.pos->x = board_W - 2; // Wrap around to right
-                break;
-            case RIGHT:
-                if(currentHead.pos->x < board_W -2)
-                    tempHead.pos->x++;  // Move right
-                else
-                    tempHead.pos->x = 1; // Wrap around to left
-                break;
+            //  Generate new food if no more food
+            mainGameMechsRef->generateFood(playerPosList);
+        }
+        else    
+        {
+            //  Continue normal snake movement
+            playerPosList->insertHead(newHead);
+            playerPosList->removeTail();  
+        }
+
+    }
+}
+
+
+
+//  Method checks if snake head ate/collided with a food item
+//  If yes, different special effects will occur depending the food type (num, upper and lower case letter)
+//  If yes, food bucket of items will decrease 
+bool Player::checkFoodConsumption()
+{
+
+    // Get the head position of the snake
+    objPos head = playerPosList->getHeadElement();
+ 
+    // Get the food position list from GameMechs
+    objPosArrayList* foodBucket = mainGameMechsRef->getFoodPos();
+ 
+    // Assume snake did not consume food
+    bool snakeAte = false;
+
+    // Check if the head matches the food position
+    for(int i = 0; i < foodBucket->getSize(); i++)
+    {
+        objPos food = foodBucket->getElement(i);
+
+        if(head.pos->x == food.pos->x && head.pos->y == food.pos->y)
+        {
+            if(food.symbol >= '0' && food.symbol <= '9')  // Numbers case
+            {
+                // # 1 Special food effect: decrease snake body by one
+                if(playerPosList->getSize() > 1)
+                {
+                    playerPosList->removeTail();
+                }
+            }
+            else if(food.symbol >= 'A' && food.symbol <= 'Z') // Upper- case letter
+            {
+                // # 3 Special food effect: increase score by 10
+                mainGameMechsRef->SuperScore();
+                increasePlayerLength(); // Grow snake
+
+            }
+            else // Lower-case letter 
+            {
+                // # 4 Special food effect: increase score by 1
+                mainGameMechsRef->incrementScore();
+                increasePlayerLength(); // Grow snake
+            }
+
+            foodBucket->removeElement(i);                   // Remove the consumed food            
+            snakeAte = true;                                // Food was consumed 
+            break;                                          //  Only one food consumed at a time     
+
         }
     }
-
-    //  Check food collision:
-    if(mainGameMechsRef->checkFoodConsumption(playerPosList))
-    {
-        //  If food consumed, grow snake
-        playerPosList->insertHead(tempHead);
-
-        //  Also generate new food
-        mainGameMechsRef->generateFood(playerPosList);
-    }
-    else    
-    {
-        //  If no food consumed, move snake as
-        playerPosList->insertHead(tempHead);
-        playerPosList->removeTail();  
-    }
-    //  Get current food position
-    // objPosArrayList* currentFood = mainGameMechsRef->getFoodItems();
-    
-    // // Check if the head collides with food
-    // if(currentHead.pos->x == currentFood->getElement.pos->x && currentHead.pos->y == currentFood.pos->y)
-    // {
-    //     //  If food is eaten: increase score and grow snake
-    //     mainGameMechsRef->incrementScore();
-    //     playerPosList->insertHead(tempHead);    // add the new head pos to the snake
-        
-    //     //Generate a new food item at a random valid position
-    //     mainGameMechsRef->generateFood(playerPosList);
-    // }
-    // else
-    // {       
-    //     //  If no food eaten, move the snake as normal 
-    //         playerPosList->insertHead(tempHead);
-    //         // remove the tail (snake body moves forward)
-    //         playerPosList->removeTail();  
-    // }
+    return snakeAte;
 }
-   
+
+
+void Player::increasePlayerLength()
+{
+    //  Use method to get new head position depending on movement
+    objPos newHead = getNextHeadPos();
+
+    //  Increase snake's body by adding the new head
+    playerPosList->insertHead(newHead);
+}
+
+
 
 //  Checks if the snake’s head collides with its body.
 //  True if there is a collision with the body; false otherwise.
 bool Player::checkSelfCollision()
 {
-    objPos head = playerPosList->getHeadElement();  // Get head element of snake
-    objPos body;
-    bool collide = false;
+    // Get head element of snake
+    objPos head = playerPosList->getHeadElement();  
+    
+    // bool will be returned at the end
+    bool selfcollided = false;
 
     //  Iterate through the snake's body
     //  Check if any part of the body collides with the head
-    for(int i = 1; i < playerPosList->getSize();i++)
+    for(int i = 1; i < playerPosList->getSize();i++)    //start at one to not include the head at index = 0
     {
-        body = playerPosList->getElement(i);    // get each part of body
+        objPos body = playerPosList->getElement(i);    // get each part of body
         if(head.pos->x == body.pos->x && head.pos->y == body.pos->y)
         {
-            collide = true; // collision detected
+            selfcollided = true; // collision detected
             break;
         }
     }
 
-    return collide;
+    return selfcollided;
 }

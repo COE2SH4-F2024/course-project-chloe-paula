@@ -50,6 +50,7 @@ class objPosArrayList
         void removeHead();                  // Removes Head element
         void removeTail();                  // Removes Tail element
         void removeElement(int index);      //  Removes element at an index
+        void clearList();                   //  Makes listSize equal to 0
 
         
         //  For visual debugging

@@ -92,6 +92,7 @@ char objPos::getSymbol() const
 // Get the symbol if the position matches another objPos
 char objPos::getSymbolIfPosEqual(const objPos* refPos) const
 {
+    //  Compare symbol of objPos with another objPos
     if(isPosEqual(refPos))
         return symbol;
     else

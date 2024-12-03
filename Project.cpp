@@ -8,7 +8,6 @@
 using namespace std;
 
 //Constants
-#define DELAY_CONST 100000
 #define BOARDER_CHAR '#'
 
 //Global Variables
@@ -30,8 +29,9 @@ int main(void)
     Initialize();
 
     //Main game loop
-    while(myGM->getExitFlagStatus() == false && myGM->getLoseFlagStatus() == false)  
+    while(myGM->getExitFlagStatus() == false)  
     {
+
         GetInput();
         RunLogic();
         DrawScreen();
@@ -43,10 +43,10 @@ int main(void)
 }
 
 
-// Funtion Definitions
+//  Funtion Definitions
 
 
-//Initialize game objects
+//  Initialize game objects
 void Initialize(void)
 {
     MacUILib_init();
@@ -59,7 +59,7 @@ void Initialize(void)
     //Seed rnadom number generation
     srand(time(NULL)); 
 
-    //  Generate initial food
+    //Generate initial food
     myGM->generateFood(myPlayer->getPlayerPos());
 
 }
@@ -89,9 +89,10 @@ void GetInput(void)
 //Update game logic
 void RunLogic(void)
 {
+
     myPlayer->updatePlayerDir();
 
-    if(!myGM->getLoseFlagStatus() && !myGM->getExitFlagStatus())
+    if(!myGM->getLoseFlagStatus() && !myGM->getExitFlagStatus() && !myGM->getWinGameStatus())
         myPlayer->movePlayer();
 
 }
@@ -101,13 +102,27 @@ void RunLogic(void)
 void DrawScreen(void)
 {
     MacUILib_clearScreen();    
+    
+    //  Display instructions
+    MacUILib_printf("________C++ Snake Game________\n");
+    MacUILib_printf("\nIntructions:\n");
+    MacUILib_printf("Reach 100 points to WIN!\n");
+    MacUILib_printf("Don't run into your own snake!\n");
+    MacUILib_printf("\n1. Use AWDS keys to move snake\n");
+    MacUILib_printf("2. Eat UPPER CASE letters\n");
+    MacUILib_printf("    +10 EXTRA POINTS \n\n");
+    MacUILib_printf("3. Eat NUMBERS:\n");
+    MacUILib_printf("    +0 POINTS & SHORTER TAIL:\n");
+    MacUILib_printf("4. EXIT GAME:\n");
+    MacUILib_printf("   - press ESCAPE, ENTER, SPACE\n\n");
 
-    //Get board dimensions and player/food positions
+
+    //  Get board dimensions and player/food positions
     int boardX = myGM->getBoardSizeX();
     int boardY = myGM->getBoardSizeY();
     objPosArrayList* playerPos = myPlayer->getPlayerPos();
     int playerSize = playerPos->getSize();
-    objPosArrayList* foodItems = myGM->getFoodItems();
+    objPosArrayList* foodItems = myGM->getFoodPos();
     
     //Draw game state
     for(int j = 0; j < boardY; j++) 
@@ -159,38 +174,19 @@ void DrawScreen(void)
 
     // Display game information
     MacUILib_printf("Score: %d",myGM->getScore());
-    MacUILib_printf("\nPress + to speed up, - to slow down. Current speed level: %d\n", myGM->getCurrentSpeed());
-    MacUILib_printf("To EXIT GAME: press ESCAPE, ENTER or SPACE button");
 }
     
+
 
 // Control game speed (delay between iterations)
 void LoopDelay(void)
 {
-    // Change the delaying constant to vary the movement speed.
-    int delayspeed;
-
-    // Adjust delay based on current game speed
-    switch(myGM->getCurrentSpeed())
-    {
-        case 1: //slowest
-            delayspeed = 400000;
-            break;
-        case 2: 
-            delayspeed = 300000;
-            break;
-        case 3: 
-            delayspeed = DELAY_CONST;  //default speed
-            break;
-        case 4: 
-            delayspeed = 60000;
-            break;
-        case 5: 
-            delayspeed = 10000;
-            break;
-    }
-    MacUILib_Delay(delayspeed); 
+    int delaySpeed = 100000;
+    
+    // default delay constant
+    MacUILib_Delay(delaySpeed); 
 }
+
 
 
 // CLean up allocated memory and display end-game messages
@@ -199,8 +195,15 @@ void CleanUp(void)
     MacUILib_clearScreen();    
 
     // Display end-game status
-    if(myGM->getLoseFlagStatus())
-        MacUILib_printf("Game Over: You lost the game!\n");
+    if(myGM->getWinGameStatus())
+    {
+        MacUILib_printf("Game Won: Amazing!\n");
+        MacUILib_printf("Final Score:%d", myGM->getScore());
+    }
+    else if(myGM->getLoseFlagStatus())
+    {    
+        MacUILib_printf("Game Over: You lost the game, better luck next time!\n");
+    }
     else if(myGM->getExitFlagStatus())
         MacUILib_printf("Game Over: You exited the game!\n");
 
@@ -209,5 +212,4 @@ void CleanUp(void)
     delete myGM;
 
     MacUILib_uninit();
-
 }

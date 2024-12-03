@@ -18,16 +18,19 @@ class GameMechs
 {
     private:
         char input;     //  Holds most recent input collected from user
+        
         bool exitFlag;  //  Indicates if game is over
         bool loseFlag;  //  Indicates if player lost, game over
+        
         int score;      //  Holds current score of player
+        
         int boardSizeX; //  Width of board
         int boardSizeY; //  Height of board
-        int MAX_SPEED;  //  Max speed of game
-        int MIN_SPEED;  //  Min speed of game
-        int gamespeed;  //  Initiaul speed of game
         
-        objPosArrayList* foodItems;    //  List of food items 
+        bool winGame;   //  Win flag
+        int MAXSCORE;   //  Max score to win
+        
+        objPosArrayList* foodBucket;    //  List of food items 
 
     public:
         //  Default Constructor: 
@@ -61,18 +64,17 @@ class GameMechs
         //   Methods for managing score
         int getScore();
         void incrementScore();
-        
-        //   Methods for managing speed
-        int getMaxSpeed() const;
-        int getMinSpeed() const;
-        int getCurrentSpeed();
-        int increment_speed();
-        int decrease_speed();
+        void decreaseScore();
+        void SuperScore();
+
         
         //   Methods for food
         void generateFood(objPosArrayList* blockOff);
-        bool checkFoodConsumption(objPosArrayList* playerPos);
-        objPosArrayList* getFoodItems() const;
+        objPosArrayList* getFoodPos() const;
+
+        //  Methods for winning the game
+        bool getWinGameStatus() const;
+        void setWinGameFlag();
 
 };
 #endif

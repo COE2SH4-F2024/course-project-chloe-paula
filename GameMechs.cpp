@@ -17,11 +17,11 @@ GameMechs::GameMechs()
     boardSizeX = 30; 
     boardSizeY = 15;
 
-    MAX_SPEED = 5;
-    MIN_SPEED = 1; 
-    gamespeed = 3;
+    winGame = false;
+    MAXSCORE = 100;
 
-    foodItems = new objPosArrayList();
+    foodBucket = new objPosArrayList();
+
 }
 
 
@@ -38,11 +38,10 @@ GameMechs::GameMechs(int boardX, int boardY)
     boardSizeX = boardX; 
     boardSizeY = boardY;
 
-    MAX_SPEED = 5;
-    MIN_SPEED = 1; 
-    gamespeed = 3;
+    winGame = false;
+    MAXSCORE = 100;
 
-    foodItems = new objPosArrayList();
+    foodBucket = new objPosArrayList();
 
 }
 
@@ -50,7 +49,7 @@ GameMechs::GameMechs(int boardX, int boardY)
 // Destructor:
 GameMechs::~GameMechs()
 {
-    delete foodItems;
+    delete foodBucket;
 }
 
 
@@ -78,7 +77,8 @@ void GameMechs::setExitTrue()
 // Return the status of the lose flag 
 void GameMechs::setLoseFlag()
 {
-    loseFlag = true; //true = player lost the game
+    loseFlag = true;    //  true = player lost the game and proper exit message will display
+    setExitTrue();      //  make sure game exits
 }
 
 
@@ -137,58 +137,53 @@ int GameMechs::getScore()
 }
 
 
-// Increment the score by 1
+// Increment the score by 1 when snake eats a Regular food
 void GameMechs::incrementScore()
 {
+    // Check if player has won the game -- reached a score of 100+
     score++;
+
+    if(getScore() > MAXSCORE)
+        setWinGameFlag();
+
     clearInput();
 }
 
 
-// Return the maximum allowed game speed
-int GameMechs::getMaxSpeed() const
+void GameMechs::decreaseScore()
 {
-    return MAX_SPEED;
+    score--;
+    // Check if score is invalid -- lost game
+    if(getScore() < 0)
+        setLoseFlag();
+    
+    clearInput();
+
+}
+//  Increment score by 10 when snake eats a SUPER food
+void GameMechs::SuperScore()
+{    
+    // Check if player has won the game -- reached a score of 100+
+    score += 10;
+
+    if(getScore() > MAXSCORE)
+        setWinGameFlag();        
+
+    clearInput();
 }
 
-
-// Return the minimum allowed game speed
-int GameMechs::getMinSpeed() const
-{
-    return MIN_SPEED;
-}
-
-
-// Return the current game speed
-int GameMechs::getCurrentSpeed()
-{
-    return gamespeed;
-}
-
-
-// Increment the game speed by 1
-int GameMechs::increment_speed()
-{
-    if(gamespeed < MAX_SPEED || gamespeed > MIN_SPEED)
-        gamespeed++;
-}
-
-
-// Decrease the game speed by 1
-int GameMechs::decrease_speed()
-{
-    if(gamespeed < MAX_SPEED || gamespeed > MIN_SPEED)
-        gamespeed--;
-}
 
 
 // Generate food at a random position
+// Requires pointer to playerlist so it won't generate food on the snake
 void GameMechs::generateFood(objPosArrayList* blockOff)
 {
-    //  Generate up to 5 food items
-    if(foodItems->getSize() == 0)
+    //  Generate 5 new foods if no food or after eating 
+    if(foodBucket->getSize() == 0 || foodBucket->getSize() < 5)
     {
-        while(foodItems->getSize() < 5)
+        foodBucket->clearList();        // clear food bucket to generate new 5 foods
+
+        while(foodBucket->getSize() < 5)
         {
             // Generate random food position within game board
             int x_random = (rand() % (boardSizeX - 2)) + 1; 
@@ -214,7 +209,7 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
             for(int i = 0; i < blockOff->getSize(); i++)
             {   
                 objPos body = blockOff->getElement(i);
-                if (newFood.pos->x == body.pos->x && newFood.pos->y == body.pos->y)
+                if(newFood.pos->x == body.pos->x && newFood.pos->y == body.pos->y)
                 {
                     validFood = false;  // Random food is invalid, it overlaps with snake
                     break;
@@ -223,49 +218,30 @@ void GameMechs::generateFood(objPosArrayList* blockOff)
 
             if(validFood)
             {
-                foodItems->insertTail(newFood);     //  Add valid food to the list
+                foodBucket->insertTail(newFood);     //  Add valid food to the list
             }
         }
     }
-}
-
-bool GameMechs::checkFoodConsumption(objPosArrayList* playerPos)
-{
-    objPos head = playerPos->getHeadElement();
-    bool snakeAte = false;
-
-    for(int i = 0; i < foodItems->getSize(); i++)
-    {
-        objPos food = foodItems->getElement(i);
-
-        if(head.pos->x == food.pos->x && head.pos->y == food.pos->y)
-        {
-            if(isdigit(food.symbol))        // Special food effect
-            {
-                increment_speed();
-            }
-            else if(isupper(food.symbol))   // Special food effect
-            {
-                score += 10;
-            }
-            else
-            {
-                incrementScore();
-            }
-
-            foodItems->removeElement(i);       // Remove the consumed food
-            snakeAte = true;                   // Food was consumed   
-            break;                              //  Only one food consumed at a time     
-
-        }
-    }
-
-    return snakeAte;                         
 }
 
 
 // Return the current food position
-objPosArrayList* GameMechs::getFoodItems() const
+objPosArrayList* GameMechs::getFoodPos() const
 {
-    return foodItems;
+    return foodBucket;
+}
+
+
+// Return win flag
+bool GameMechs::getWinGameStatus() const
+{
+    return winGame;
+}
+
+
+// Set win flag to ture -- player won game (reached score of 100!)
+void GameMechs::setWinGameFlag()
+{
+    winGame = true;
+    setExitTrue();      //  make sure game exits
 }

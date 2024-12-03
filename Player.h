@@ -35,6 +35,9 @@ class Player
         //  Updates the player's movement direction based on input
         void updatePlayerDir();
 
+        //  Calculates new position of head based on current direction of player
+        objPos getNextHeadPos() const;
+
         // Moves the player based on the current direction.
         // Handles collisions with food and itself.
         void movePlayer();
@@ -42,9 +45,11 @@ class Player
         // Checks if the snake's head collides with its body
         bool checkSelfCollision();
 
-        // bool checkFoodConsumption();
+        //  Check if snake's head consumed with food bucket
+        bool checkFoodConsumption();
 
-        // void increasePlayerLength();
+        //  Increase length of snake
+        void increasePlayerLength();
 
     private:
         // Dynamic list representing the snake's body
